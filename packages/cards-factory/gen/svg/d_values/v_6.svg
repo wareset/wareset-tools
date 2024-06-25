@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg3137"
+   sodipodi:docname="v_6.svg"
+   inkscape:version="1.2.2 (unknown)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3139"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="24.34523"
+     inkscape:cx="14.787291"
+     inkscape:cy="16.65624"
+     inkscape:window-width="960"
+     inkscape:window-height="1023"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3258"
+       empspacing="4" />
+  </sodipodi:namedview>
+  <defs
+     id="defs3134" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="m 24.783856,4 v 0.8901565 q -4.385612,0.7532099 -7.000865,2.9101288 -2.57506,2.1569189 -3.701629,5.9229667 1.569156,-0.582025 3.379733,-0.582025 3.419958,0 5.47196,1.848786 2.051976,1.848786 2.051976,4.964337 0,3.492154 -2.454327,5.78602 Q 20.076376,28 16.334501,28 12.109843,28 9.5348106,25.329528 7,22.659058 7,18.208273 7,11.223965 13.880173,7.1840225 16.17356,5.8487869 18.46696,5.1640513 20.800609,4.4793149 24.783856,4 Z M 13.27666,19.269617 q 0,3.149784 0.402351,4.930097 0.442573,1.780315 1.0461,2.328105 0.643749,0.547787 1.689873,0.547787 1.488671,0 1.971507,-0.992866 0.482832,-1.027105 0.482832,-4.074182 0,-4.07418 -0.804726,-5.683307 -0.804677,-1.643369 -2.816418,-1.643369 -0.92542,0 -1.327771,0.308131 -0.362116,0.308134 -0.523055,1.232526 -0.120629,0.890158 -0.120629,3.047078 z"
+       style="font-weight:bold;font-size:40.4274px;line-height:1.25;font-family:FreeSerif;-inkscape-font-specification:'FreeSerif Bold';fill:#00d4bd;fill-opacity:1;stroke:none;stroke-width:1.15984"
+       id="path2225" />
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="svg3137"
+   sodipodi:docname="v_2.svg"
+   inkscape:version="1.2.2 (unknown)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3139"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="24.34523"
+     inkscape:cx="15.239125"
+     inkscape:cy="16.984847"
+     inkscape:window-width="960"
+     inkscape:window-height="1023"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3258"
+       empspacing="4" />
+  </sodipodi:namedview>
+  <defs
+     id="defs3134" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="M 7.5466214,11.116277 Q 10.514076,4 16.136646,4 q 3.162702,0 5.193064,1.8139534 2.030374,1.779069 2.030374,4.5697666 0,3.837208 -4.451194,7.604653 l -6.32538,5.37209 h 5.895874 q 3.006502,0 3.865514,-0.418606 0.858998,-0.418604 1.717996,-2.302324 H 25 L 23.242942,28 H 7 v -0.802329 q 6.676766,-6.348834 8.863342,-9.348835 2.186562,-3.034884 2.186562,-5.44186 0,-1.779068 -1.288516,-3.10465 -1.288506,-1.3255811 -3.35794,-1.3255811 -3.0065,0 -4.7635452,3.1395331 z"
+       style="font-weight:bold;font-size:40.4274px;line-height:1.25;font-family:FreeSerif;-inkscape-font-specification:'FreeSerif Bold';fill:#00d4bd;fill-opacity:1;stroke:none;stroke-width:1.15331"
+       id="path2233" />
+  </g>
+</svg>

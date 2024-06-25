@@ -1,0 +1,13 @@
+{
+  "name": "wareset-tools-monorepo",
+  "private": true,
+  "license": "MIT",
+  "description": "Monorepo for wareset-tools",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "6.6.2",
+    "typescript": "^5.2.2"
+  }
+}
