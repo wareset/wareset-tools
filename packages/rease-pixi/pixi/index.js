@@ -1,0 +1,2 @@
+/* eslint-disable */
+const e=require("pixi.js");function t(e){const t=Object.create(null);if(e)for(const r in e)if("default"!==r){const n=Object.getOwnPropertyDescriptor(e,r);Object.defineProperty(t,r,n.get?n:{enumerable:!0,get:function(){return e[r]}})}return t.default=e,Object.freeze(t)}const r=t(require("@pixi/sound"));exports.sound=r,Object.keys(e).forEach((function(t){"default"===t||Object.prototype.hasOwnProperty.call(exports,t)||Object.defineProperty(exports,t,{enumerable:!0,get:function(){return e[t]}})}));

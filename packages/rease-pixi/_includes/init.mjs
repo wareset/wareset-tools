@@ -1,0 +1,2 @@
+/* eslint-disable */
+import{extensions as d,ResizePlugin as a,TickerPlugin as i,GraphicsPipe as m,GraphicsContextSystem as o,MeshPipe as p,CanvasTextSystem as r,CanvasTextPipe as x,BitmapTextPipe as e,loadBitmapFont as f,bitmapFontCachePlugin as j,HTMLTextSystem as n,HTMLTextPipe as s,TilingSpritePipe as t,NineSliceSpritePipe as b,FilterSystem as c,FilterPipe as g}from"../pixi/index.mjs";d.add(a),d.add(i),d.add(m),d.add(o),d.add(p),d.add(r),d.add(x),d.add(e,f,j),d.add(n),d.add(s),d.add(t),d.add(b),d.add(c),d.add(g);
