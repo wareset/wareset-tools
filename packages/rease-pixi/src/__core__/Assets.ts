@@ -19,7 +19,10 @@ function _destroy(this: any) {
 function _await(this: { iam: PixiAssets; props: any }, v: any) {
   const { iam, props } = this
   if (props.unset) iam.onDestroy(_destroy, props)
-  if (!iam.destroyed && props.children) iam.insert(props.children.call(iam, v))
+  if (!iam.destroyed) {
+    const children = props.children
+    iam.insert(typeof children === 'function' ? children.call(iam, v) : children)
+  }
 }
 
 class PixiAssets extends Rease {
@@ -33,14 +36,12 @@ class PixiAssets extends Rease {
     pixi: typeof Assets
     method: 'add'
     assets: AssetsBundle['assets']
-    children?: (this: PixiAssets) => any
   })
   constructor(props: {
     pixi: typeof Assets
     method: 'addBundle'
     bundleId: string
     assets: AssetsBundle['assets']
-    children?: (this: PixiAssets) => any
   })
   constructor(props: {
     pixi: typeof Assets

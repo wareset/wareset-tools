@@ -11,14 +11,12 @@ declare class PixiAssets extends Rease {
         pixi: typeof Assets;
         method: 'add';
         assets: AssetsBundle['assets'];
-        children?: (this: PixiAssets) => any;
     });
     constructor(props: {
         pixi: typeof Assets;
         method: 'addBundle';
         bundleId: string;
         assets: AssetsBundle['assets'];
-        children?: (this: PixiAssets) => any;
     });
     constructor(props: {
         pixi: typeof Assets;
