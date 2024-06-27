@@ -65,7 +65,6 @@ class PixiEvent extends Rease {
       this.PixiScene = parent
       this._on()
       if (this._mode) parent.pixi.eventMode = this._mode
-      console.log(parent.pixi)
     }
   }
 
