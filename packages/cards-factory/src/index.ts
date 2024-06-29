@@ -1,8 +1,12 @@
-import { canvasarea, type CanvasareaRenderingContext2D, Canvasarea } from '@wareset-tools/canvasarea'
+import {
+  canvasarea,
+  type CanvasareaRenderingContext2D,
+  Canvasarea
+} from '@wareset-tools/canvasarea'
 
 const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d')!
-document.body.appendChild(canvas)
+// document.body.appendChild(canvas)
 
 import * as suits from './__core__/gen/svg/d_suits'
 const SUITS = {} as { [K in keyof typeof suits]: Path2D }
@@ -255,28 +259,28 @@ export function createCards({
   height = width * 1.4,
   bgColor = '#fff',
   borderColor = '#000',
-  s11Color = '#f00', // ♥
-  s10Color = '#f80', // ♦
-  s01Color = '#000', // ♠
-  s00Color = '#080' //  ♣
+  rhColor = '#f00', // ♥
+  rnColor = '#f80', // ♦
+  bhColor = '#000', // ♠
+  bnColor = '#080' //  ♣
 }: {
   width?: number
   height?: number
   bgColor?: string | CanvasGradient | CanvasPattern
   borderColor?: string | CanvasGradient | CanvasPattern
-  s11Color?: string | CanvasGradient | CanvasPattern | null
-  s01Color?: string | CanvasGradient | CanvasPattern | null
-  s10Color?: string | CanvasGradient | CanvasPattern | null
-  s00Color?: string | CanvasGradient | CanvasPattern | null
+  rhColor?: string | CanvasGradient | CanvasPattern | null
+  bhColor?: string | CanvasGradient | CanvasPattern | null
+  rnColor?: string | CanvasGradient | CanvasPattern | null
+  bnColor?: string | CanvasGradient | CanvasPattern | null
 } = {}) {
   const res = {} as { [key: string]: string }
-  // s11Color = null
-  // s10Color = null
-  // s01Color = null
-  // s00Color = null
+  // rhColor = null
+  // rnColor = null
+  // bhColor = null
+  // bnColor = null
   const COLORS = [
-    [s00Color, s01Color],
-    [s10Color, s11Color]
+    [bnColor, bhColor],
+    [rnColor, rhColor]
   ] as const
 
   BG_COLOR = bgColor
@@ -304,7 +308,7 @@ export function createCards({
         rgt.render(ctx)
 
         // const key = `c${color}${heart}${value > 9 ? '' : '0'}${value}`
-        const key = `${color}${heart}${value.toString(16)}`
+        const key = `${color ? 'r' : 'b'}${heart ? 'h' : 'n'}${value.toString(16)}`
         res[key] = canvas.toDataURL()
       }
     }

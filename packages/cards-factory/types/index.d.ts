@@ -1,15 +1,15 @@
-export declare function createCards({ width, height, bgColor, borderColor, s11Color, // ♥
-s10Color, // ♦
-s01Color, // ♠
-s00Color }?: {
+export declare function createCards({ width, height, bgColor, borderColor, rhColor, // ♥
+rnColor, // ♦
+bhColor, // ♠
+bnColor }?: {
     width?: number;
     height?: number;
     bgColor?: string | CanvasGradient | CanvasPattern;
     borderColor?: string | CanvasGradient | CanvasPattern;
-    s11Color?: string | CanvasGradient | CanvasPattern | null;
-    s01Color?: string | CanvasGradient | CanvasPattern | null;
-    s10Color?: string | CanvasGradient | CanvasPattern | null;
-    s00Color?: string | CanvasGradient | CanvasPattern | null;
+    rhColor?: string | CanvasGradient | CanvasPattern | null;
+    bhColor?: string | CanvasGradient | CanvasPattern | null;
+    rnColor?: string | CanvasGradient | CanvasPattern | null;
+    bnColor?: string | CanvasGradient | CanvasPattern | null;
 }): {
     [key: string]: string;
 };
