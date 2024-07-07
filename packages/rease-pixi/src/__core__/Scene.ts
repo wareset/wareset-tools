@@ -66,44 +66,6 @@ extends
     | HTMLText
 */
 
-function removePixiRenderer(iam: PixiScene) {
-  const PixiRenderer = iam.PixiRenderer
-  if (PixiRenderer) {
-    if (PixiRenderer.PixiScene === iam) {
-      PixiRenderer.PixiScene = PixiRenderer._renderOptions = void 0
-    } else {
-      iam.update()
-    }
-    iam.PixiRenderer = void 0
-  }
-}
-function _move(iam: PixiScene) {
-  removePixiRenderer(iam)
-  const { parent, next } = iam.findParentOrNext([PixiRenderer, PixiScene], PixiScene)
-  const pixi = iam.pixi
-  if (parent instanceof PixiRenderer) {
-    parent.PixiScene = iam
-    parent._renderOptions = { container: pixi }
-    iam.PixiRenderer = parent
-  } else {
-    const pixiNext = next && next.pixi
-    const pixiParent = (pixiNext && pixiNext.parent) || (parent && parent.pixi)
-    if (pixiParent) {
-      pixiNext
-        ? pixiParent.addChildAt(pixi, pixiParent.getChildIndex(pixiNext))
-        : pixiParent.addChild(pixi)
-      iam.PixiRenderer = (parent || next).PixiRenderer
-    } else {
-      pixi.removeFromParent()
-    }
-  }
-  iam.update()
-}
-function _destroy(iam: PixiScene) {
-  removePixiRenderer(iam)
-  iam.pixi.destroy()
-}
-
 class PixiScene<Pixi extends Container = Container> extends Rease {
   readonly pixi: Pixi
   PixiRenderer?: PixiRenderer
@@ -133,6 +95,45 @@ class PixiScene<Pixi extends Container = Container> extends Rease {
   update() {
     this.PixiRenderer && this.PixiRenderer.update()
   }
+}
+
+function removePixiRenderer(iam: PixiScene) {
+  const PixiRenderer = iam.PixiRenderer
+  if (PixiRenderer) {
+    if (PixiRenderer.PixiScene === iam) {
+      PixiRenderer.PixiScene = PixiRenderer._renderOptions = void 0
+    } else {
+      iam.update()
+    }
+    iam.PixiRenderer = void 0
+  }
+}
+const _PERENT_CLASSES = [PixiRenderer, PixiScene]
+function _move(iam: PixiScene) {
+  removePixiRenderer(iam)
+  const { parent, next } = iam.findParentOrNext(_PERENT_CLASSES, PixiScene)
+  const pixi = iam.pixi
+  if (parent instanceof PixiRenderer) {
+    parent.PixiScene = iam
+    parent._renderOptions = { container: pixi }
+    iam.PixiRenderer = parent
+  } else {
+    const pixiNext = next && next.pixi
+    const pixiParent = (pixiNext && pixiNext.parent) || (parent && parent.pixi)
+    if (pixiParent) {
+      pixiNext
+        ? pixiParent.addChildAt(pixi, pixiParent.getChildIndex(pixiNext))
+        : pixiParent.addChild(pixi)
+      iam.PixiRenderer = (parent || next).PixiRenderer
+    } else {
+      pixi.removeFromParent()
+    }
+  }
+  iam.update()
+}
+function _destroy(iam: PixiScene) {
+  removePixiRenderer(iam)
+  iam.pixi.destroy()
 }
 
 export { PixiScene as Scene }
