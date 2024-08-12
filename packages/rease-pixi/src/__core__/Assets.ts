@@ -18,7 +18,7 @@ function _destroy(this: any) {
 
 function _await(this: { iam: PixiAssets; props: any }, v: any) {
   const { iam, props } = this
-  if (props.unset) iam.onDestroy(_destroy, props)
+  if (props.unload) iam.onDestroy(_destroy, props)
   if (!iam.destroyed) {
     const children = props.children
     iam.insert(typeof children === 'function' ? children.call(iam, v) : children)
