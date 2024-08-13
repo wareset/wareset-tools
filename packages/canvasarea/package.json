@@ -34,7 +34,6 @@
   },
   "devDependencies": {
     "dester": "1.0.x",
-    "typescript": "^5.2.2",
-    "math-safe": "1.0.x"
+    "typescript": "^5.2.2"
   }
 }

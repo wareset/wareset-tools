@@ -76,12 +76,12 @@ class _CanvasareaRenderingContext2D_ {
                     ? function (this: _CanvasareaRenderingContext2D_) {
                         return get.call(this._ctx)
                       }
-                    : void 0,
+                    : void 0 as any,
                   set: set
                     ? function (this: _CanvasareaRenderingContext2D_, v: any) {
                         set.call(this._ctx, v)
                       }
-                    : void 0
+                    : void 0 as any
                 }
               : {
                   // configurable,
