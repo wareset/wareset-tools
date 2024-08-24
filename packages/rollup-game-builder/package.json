@@ -1,0 +1,62 @@
+{
+  "name": "@wareset-tools/rollup-game-builder",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "wip",
+  "keywords": [
+    "rollup-game-builder"
+  ],
+  "license": "MIT",
+  "author": "rease <cftcview@gmail.com>",
+  "main": "index",
+  "module": "index.mjs",
+  "types": "types/index.d.ts",
+  "files": [
+    "README.md",
+    "index.d.ts",
+    "index.js",
+    "index.mjs",
+    "types/**/*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "dester -m",
+    "dev": "dester -mw"
+  },
+  "devDependencies": {
+    "dester": "1.0.x",
+    "typescript": "^5.2.2",
+    "@types/adm-zip": "0.5.5"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/runtime": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/plugin-transform-runtime": "^7.23.6",
+    "@babel/plugin-transform-block-scoping": "^7.23.4",
+    "rollup": "3.29.4",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-inject": "^5.0.3",
+    "@rollup/plugin-replace": "^5.0.7",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "@wareset-tools/rollup-plugin-cssinjs-minify": "1.0.x",
+    "svgo": "^3.3.2",
+    "jimp": "^0.22.12",
+    "adm-zip": "0.5.15",
+    "terser": "^5.19.4",
+    "sucrase": "^3.35.0",
+    "math-safe": "1.1.0"
+  }
+}
