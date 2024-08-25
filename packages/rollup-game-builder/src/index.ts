@@ -222,9 +222,9 @@ export default function ({
           // MATH
           (() => {
             const obj = { MATH: ['math-safe', '*'] } as any
-            Object.keys(MATH_SAFE).forEach((v) => {
-              obj['Math.' + v] = ['math-safe', v]
-            })
+            // Object.keys(MATH_SAFE).forEach((v) => {
+            //   obj['Math.' + v] = ['math-safe', v]
+            // })
             return rollupInject(obj)
             // return inject({
             //   Math: ['math-safe', '*'],
