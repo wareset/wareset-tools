@@ -1,7 +1,7 @@
 import {
   canvasarea,
   type CanvasareaRenderingContext2D,
-  Canvasarea
+  Canvasarea,
 } from '@wareset-tools/canvasarea'
 
 const canvas = document.createElement('canvas')
@@ -16,7 +16,14 @@ import * as values from './__core__/gen/svg/d_values'
 const VALUES = {} as { [K in keyof typeof values]: Path2D }
 for (const k in values) (VALUES as any)[k] = new Path2D((values as any)[k])
 
-function roundRectPath(w: number, h: number, tlr: number, trr: number, brr: number, blr: number) {
+function roundRectPath(
+  w: number,
+  h: number,
+  tlr: number,
+  trr: number,
+  brr: number,
+  blr: number
+) {
   // prettier-ignore
   return 'M 0 ' + tlr
     + ' A ' + tlr + ' ' + tlr + ' 0 0 1 ' + tlr + ' 0'
@@ -251,10 +258,10 @@ const DRAWS = [
   suit10, //10 a
   suit11, //11 b
   suit11, //12 c
-  suit11 // 13 d
+  suit11, // 13 d
 ]
 
-export function createCards({
+export default function cardsFactory({
   width = 100,
   height = width * 1.4,
   bgColor = '#fff',
@@ -262,7 +269,7 @@ export function createCards({
   rhColor = '#f00', // ♥
   rnColor = '#f80', // ♦
   bhColor = '#000', // ♠
-  bnColor = '#080' //  ♣
+  bnColor = '#080', //  ♣
 }: {
   width?: number
   height?: number
@@ -280,7 +287,7 @@ export function createCards({
   // bnColor = null
   const COLORS = [
     [bnColor, bhColor],
-    [rnColor, rhColor]
+    [rnColor, rhColor],
   ] as const
 
   BG_COLOR = bgColor
@@ -314,5 +321,20 @@ export function createCards({
     }
   }
 
-  return res
+  return res as {
+    [key: string]: `${'r' | 'b'}${'h' | 'n'}${
+      | '1'
+      | '2'
+      | '3'
+      | '4'
+      | '5'
+      | '6'
+      | '7'
+      | '8'
+      | '9'
+      | 'a'
+      | 'b'
+      | 'c'
+      | 'd'}`
+  }
 }
