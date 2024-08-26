@@ -92,8 +92,8 @@ export default function ({
               })
               .join('') +
             `\n    <script src=${stringify(`_dev/${title}.js`)} defer></script>` +
-            `\n  </body>`,
-        ),
+            `\n  </body>`
+        )
       )
 
       if (production)
@@ -101,8 +101,8 @@ export default function ({
           /\s*<\/head>/,
           '' +
             '\n    <!-- Game SDK -->' +
-            `\n    <script src=${stringify(sdkUrl)}></script>` +
-            `\n  </head>`,
+            (sdkUrl ? `\n    <script src=${stringify(sdkUrl)}></script>` : '') +
+            `\n  </head>`
         ).replace(
           /\s*<\/body>/,
           '' +
@@ -122,7 +122,7 @@ export default function ({
               })
               .join('') +
             `\n    <script src=${stringify(`${staticDirName}/build.js`)} defer></script>` +
-            `\n  </body>`,
+            `\n  </body>`
         )
 
       return {
