@@ -1,4 +1,4 @@
-export const SDK = ((setTimeout, resolve, reject, random) => {
+export const SDK = ((setTimeout, random, Promise) => {
   const noop = () => {}
 
   const run_adv = (
@@ -52,9 +52,9 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
         } else {
           for (const k in PLAYER_DATA) res[k] = JSON.parse(PLAYER_DATA[k])
         }
-        return resolve(res)
+        return Promise.resolve(res)
       } catch (e) {
-        return reject(e)
+        return Promise.reject(e)
       }
     },
     setData: (data: { [key: string]: IValidForJSON }, _flush = false) => {
@@ -62,9 +62,9 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
         const res = {} as any
         for (const k in data) res[k] = JSON.stringify(data[k])
         PLAYER_DATA = res
-        return resolve()
+        return Promise.resolve()
       } catch (e) {
-        return reject(e)
+        return Promise.reject(e)
       }
     },
 
@@ -77,9 +77,9 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
         } else {
           for (const k in PLAYER_STATS) res[k] = PLAYER_STATS[k]
         }
-        return resolve(res)
+        return Promise.resolve(res)
       } catch (e) {
-        return reject(e)
+        return Promise.reject(e)
       }
     },
     setStats: (data: { [key: string]: number }) => {
@@ -88,9 +88,9 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
         for (const k in data)
           if (typeof (res[k] = data[k]) !== 'number') new Error('Stats is not valid')
         PLAYER_STATS = res
-        return resolve()
+        return Promise.resolve()
       } catch (e) {
-        return reject(e)
+        return Promise.reject(e)
       }
     },
     incrementStats: (increments: { [key: string]: number }) => {
@@ -100,9 +100,9 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
           if (typeof increments[k] !== 'number') new Error('Increments is not valid')
           else if (increments[k] !== PLAYER_STATS[k]) res[k] = increments[k]
         PLAYER_STATS = { ...PLAYER_STATS, ...increments }
-        return resolve(res)
+        return Promise.resolve(res)
       } catch (e) {
-        return reject(e)
+        return Promise.reject(e)
       }
     },
   }
@@ -121,14 +121,14 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
     },
 
     serverTime: () => Date.now(),
-    getStorage: () => resolve(localStorage),
-    getPlayer: (_props?: { scopes: boolean }) => resolve(PLAYER),
+    getStorage: () => Promise.resolve(localStorage),
+    getPlayer: (_props?: { scopes: boolean }) => Promise.resolve(PLAYER),
     getFlags: (
       props: {
         defaultFlags?: { [key: string]: string }
         clientFeatures?: { name: string; value: string }[]
       } = {}
-    ) => resolve({ ...props.defaultFlags }),
+    ) => Promise.resolve({ ...props.defaultFlags }),
 
     features: {
       LoadingAPI: {} as { ready: () => void } | undefined,
@@ -136,7 +136,7 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
     },
 
     auth: {
-      openAuthDialog: () => reject(),
+      openAuthDialog: () => Promise.reject(),
     },
 
     adv: {
@@ -176,13 +176,13 @@ export const SDK = ((setTimeout, resolve, reject, random) => {
               | 'REVIEW_WAS_REQUESTED'
               | 'UNKNOWN'
           }
-      > => resolve({ value: false, reason: 'UNKNOWN' }),
-      requestReview: () => resolve({ feedbackSent: false }),
+      > => Promise.resolve({ value: false, reason: 'UNKNOWN' }),
+      requestReview: () => Promise.resolve({ feedbackSent: false }),
     },
 
     shortcut: {
-      canShowPrompt: () => resolve({ canShow: true }),
-      showPrompt: () => resolve({ outcome: 'accepted' as 'accepted' | '' }),
+      canShowPrompt: () => Promise.resolve({ canShow: true }),
+      showPrompt: () => Promise.resolve({ outcome: 'accepted' as 'accepted' | '' }),
     },
   }
-})(setTimeout, Promise.resolve, Promise.reject, Math.random)
+})(setTimeout, Math.random, Promise)
