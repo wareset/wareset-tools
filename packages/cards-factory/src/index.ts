@@ -321,8 +321,26 @@ export default function cardsFactory({
     }
   }
 
-  return res as {
-    [key: string]: `${'r' | 'b'}${'h' | 'n'}${
+  // return res as Record<
+  //   `${'r' | 'b'}${'h' | 'n'}${
+  //     | '1'
+  //     | '2'
+  //     | '3'
+  //     | '4'
+  //     | '5'
+  //     | '6'
+  //     | '7'
+  //     | '8'
+  //     | '9'
+  //     | 'a'
+  //     | 'b'
+  //     | 'c'
+  //     | 'd'}`,
+  //   string
+  // >
+
+  return res as Readonly<{
+    [key in `${'r' | 'b'}${'h' | 'n'}${
       | '1'
       | '2'
       | '3'
@@ -335,6 +353,6 @@ export default function cardsFactory({
       | 'a'
       | 'b'
       | 'c'
-      | 'd'}`
-  }
+      | 'd'}`]: string
+  }>
 }
