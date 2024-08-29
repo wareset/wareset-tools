@@ -1,11 +1,11 @@
-export * from './__core__/init'
-
 export * from './__core__/adv'
-export * from './__core__/env'
-export * from './__core__/flags'
 export * from './__core__/gameplay'
-export * from './__core__/player'
+export * from './__core__/init'
 export * from './__core__/ready'
 export * from './__core__/review'
 export * from './__core__/shortcut'
-export * from './__core__/time'
+
+/*
+1. Если нет сдк то везде возвращать тру а не фолс
+2. возможно имеет смысл кэшировать дату, но это не точно
+*/

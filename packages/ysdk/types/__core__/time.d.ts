@@ -1,1 +1,1 @@
-export declare const getServerTime: () => Promise<any>;
+export declare const serverTime: () => any;

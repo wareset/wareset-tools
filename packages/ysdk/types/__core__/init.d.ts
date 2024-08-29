@@ -1,2 +1,10 @@
-export declare const showError: (error: any) => void;
-export declare const init: () => Promise<null | any>;
+import { SDK } from './SDK';
+export { SDK };
+export type ISDK = typeof SDK;
+export type IPlayer = Awaited<ReturnType<ISDK['getPlayer']>>;
+export declare const logError: (error: any) => void;
+export declare const init: () => any;
+export declare const openAuthDialog: () => any;
+export declare const getStorage: () => any;
+export declare const getFlags: (params?: Parameters<ISDK['getFlags']>[0]) => any;
+export declare const getPlayer: (params?: Parameters<ISDK['getPlayer']>[0]) => any;

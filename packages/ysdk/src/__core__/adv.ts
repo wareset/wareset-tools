@@ -1,6 +1,7 @@
-import { init, showError } from './init'
+import { init, logError, type ISDK } from './init'
 
-/*
+/**
+Полноэкранный блок рекламы
 Полноэкранный блок рекламы — блоки с рекламой, которые полностью закрывают фон приложения и показываются между запросом какой-то информации пользователем (например, при переходе на следующий уровень игры) и ее получением.
 
 Чтобы вызвать рекламу, используйте метод ysdk.adv.showFullscreenAdv({callbacks:{}}).
@@ -15,25 +16,15 @@ onError — вызывается при возникновении ошибки.
 
 onOffline — вызывается при потере сетевого соединения (переходе в офлайн-режим).
 */
-
-const runError = (callbacks: any, e?: any) => {
-  showError(e), callbacks && callbacks.onError && callbacks.onError(e)
-}
-
 export const advImage = (
-  callbacks: {
-    onClose?: (wasShown: boolean) => any
-    onOpen?: () => any
-    onError?: (error: any) => any
-    onOffline?: () => any
-  } = {}
+  callbacks: Parameters<ISDK['adv']['showFullscreenAdv']>[0]['callbacks'] = {}
 ) => {
   init()
-    .then((ysdk) => (ysdk ? ysdk.adv.showFullscreenAdv({ callbacks }) : runError(callbacks)))
-    .catch((e) => runError(callbacks, e))
+    .then((ysdk) => ysdk.adv.showFullscreenAdv({ callbacks }))
+    .catch(logError)
 }
 
-/*
+/**
 Видеореклама с вознаграждением (rewarded video)
 Видео с вознаграждением — блоки с видеорекламой, которые используются для монетизации игр. За просмотр видеоролика пользователь получает награду или внутриигровую валюту.
 
@@ -49,16 +40,10 @@ onError — вызывается при возникновении ошибки.
 
 onRewarded — вызывается, когда засчитывается просмотр видеорекламы. Укажите в данной функции, какую награду пользователь получит после просмотра.
 */
-
 export const advVideo = (
-  callbacks: {
-    onClose?: () => any
-    onOpen?: () => any
-    onError?: (error: any) => any
-    onRewarded?: () => any
-  } = {}
+  callbacks: Parameters<ISDK['adv']['showRewardedVideo']>[0]['callbacks'] = {}
 ) => {
   init()
-    .then((ysdk) => (ysdk ? ysdk.adv.showRewardedVideo({ callbacks }) : runError(callbacks)))
-    .catch((e) => runError(callbacks, e))
+    .then((ysdk) => ysdk.adv.showRewardedVideo({ callbacks }))
+    .catch(logError)
 }

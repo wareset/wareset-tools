@@ -1,6 +1,8 @@
-import { init, showError} from './init'
+import { init, logError } from './init'
 
-/*
+let isStarted = false
+
+/**
 Метод ysdk.features.GameplayAPI.start() нужно вызывать в случаях, когда игрок начинает или возобновляет игровой процесс:
 
 запуск уровня;
@@ -11,16 +13,13 @@ import { init, showError} from './init'
 
 Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен.
 */
-
-let isStarted = false
-export const gameStart = () =>
+export const gameStart = () => {
   init()
-    .then(
-      (ysdk) => isStarted || (ysdk && ysdk.features.GameplayAPI.start(), (isStarted = true))
-    )
-    .catch((e) => (showError(e), isStarted))
+    .then((ysdk) => isStarted || ((isStarted = true), ysdk.features.GameplayAPI!.start()))
+    .catch(logError)
+}
 
-/*
+/**
 Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
 
 прохождение уровня или проигрыш;
@@ -30,10 +29,8 @@ export const gameStart = () =>
 уход в другую вкладку браузера.
 Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
 */
-
-export const gameStop = () =>
+export const gameStop = () => {
   init()
-    .then(
-      (ysdk) => !(isStarted && (ysdk && ysdk.features.GameplayAPI.stop(), (isStarted = false)))
-    )
-    .catch((e) => (showError(e), !isStarted))
+    .then((ysdk) => !(isStarted && ((isStarted = false), ysdk.features.GameplayAPI!.stop())))
+    .catch(logError)
+}
