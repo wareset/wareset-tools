@@ -49,17 +49,17 @@ class _CanvasareaRenderingContext2D_ {
       defineProperty(proto, 'GLOBAL_SCALE_X', {
         get: function () {
           return this._transform(), this._gsx
-        }
+        },
       })
       defineProperty(proto, 'GLOBAL_SCALE_Y', {
         get: function () {
           return this._transform(), this._gsy
-        }
+        },
       })
       defineProperty(proto, 'GLOBAL_SCALE_MEAN', {
         get: function () {
           return this._transform(), (this._gsx + this._gsy) / 2
-        }
+        },
       })
 
       Object.getOwnPropertyNames(proto2d).forEach(function (key) {
@@ -76,12 +76,12 @@ class _CanvasareaRenderingContext2D_ {
                     ? function (this: _CanvasareaRenderingContext2D_) {
                         return get.call(this._ctx)
                       }
-                    : void 0 as any,
+                    : (void 0 as any),
                   set: set
                     ? function (this: _CanvasareaRenderingContext2D_, v: any) {
                         set.call(this._ctx, v)
                       }
-                    : void 0 as any
+                    : (void 0 as any),
                 }
               : {
                   // configurable,
@@ -89,7 +89,7 @@ class _CanvasareaRenderingContext2D_ {
                   // writable,
                   value: function () {
                     return this._transform(), value.apply(this._ctx, arguments)
-                  }
+                  },
                 }
           )
       })
@@ -160,10 +160,17 @@ class _CanvasareaRenderingContext2D_ {
 }
 
 function normalize_idx(i: number | undefined, l: number) {
-  return typeof i === 'number' && i <= l ? ((i |= 0) < 0 ? ((i = l - i) < 0 ? 0 : i) : i) : l
+  return typeof i === 'number' && i <= l
+    ? (i |= 0) < 0
+      ? (i = l + i - 1) < 0
+        ? 0
+        : i
+      : i
+    : l
 }
 
-export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ & CanvasRenderingContext2D
+export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ &
+  CanvasRenderingContext2D
 
 const CONTEXTS: _CanvasareaRenderingContext2D_[] = []
 
