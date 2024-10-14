@@ -3,7 +3,9 @@ import { type Renderer, type Container } from 'pixi.js';
 import { type Scene as PixiScene } from './Scene';
 import { type PropsRenderer } from './utils';
 declare class PixiRenderer<Pixi extends Renderer = Renderer> extends Rease {
-    pixi?: Pixi;
+    pixi?: Pixi & {
+        _rease?: PixiRenderer<Pixi>;
+    };
     PixiScene?: PixiScene;
     _renderOptions?: {
         container: Container;

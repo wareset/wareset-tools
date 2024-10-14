@@ -131,8 +131,10 @@ export const SDK = ((setTimeout, random, Promise) => {
     ) => Promise.resolve({ ...props.defaultFlags }),
 
     features: {
-      LoadingAPI: {} as { ready: () => void } | undefined,
-      GameplayAPI: {} as { start: () => void; stop: () => void } | undefined,
+      LoadingAPI: { ready: noop } as { ready: () => void } | undefined,
+      GameplayAPI: { start: noop, stop: noop } as
+        | { start: () => void; stop: () => void }
+        | undefined,
     },
 
     auth: {

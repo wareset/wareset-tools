@@ -3,7 +3,9 @@ import { Renderer as PixiRenderer } from './Renderer';
 import { type PropsScene } from './utils';
 import type { Container, ContainerOptions, Sprite, SpriteOptions, Texture, AnimatedSprite, FrameObject, TilingSprite, TilingSpriteOptions, NineSliceSprite, NineSliceSpriteOptions, Graphics, GraphicsOptions, GraphicsContext, Mesh, MeshOptions, MeshGeometry, TextureShader, MeshSimple, SimpleMeshOptions, MeshPlane, MeshPlaneOptions, MeshRope, MeshRopeOptions, Text, TextOptions, BitmapText, HTMLText, HTMLTextOptions } from 'pixi.js';
 declare class PixiScene<Pixi extends Container = Container> extends Rease {
-    readonly pixi: Pixi;
+    readonly pixi: Pixi & {
+        _rease?: PixiScene<Pixi>;
+    };
     PixiRenderer?: PixiRenderer;
     constructor(props: PropsScene<Container> & {
         options?: ContainerOptions;
@@ -45,5 +47,7 @@ declare class PixiScene<Pixi extends Container = Container> extends Rease {
         options?: HTMLTextOptions;
     });
     update(): void;
+    hookMove(rease: Rease, _from: Rease | null, _to: Rease | null): any;
+    hookDestroy(iam: this): void;
 }
 export { PixiScene as Scene };

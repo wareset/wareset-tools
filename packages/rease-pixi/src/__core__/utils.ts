@@ -45,14 +45,18 @@ export function is_function(v: any): v is Function {
   return typeof v === 'function'
 }
 export function is_native_object(v: any): v is { [key: string]: any } {
-  return !!((v && (v = Object.getPrototypeOf(v)) === Object.prototype) || !v)
+  return v != null && ((v = Object.getPrototypeOf(v)) === Object.prototype || !v)
 }
+
+// console.log(is_native_object([]))
 
 export function deep_update_props(to: any, from: any, cache: any) {
   for (const k in from) {
     is_native_object(from[k])
       ? deep_update_props(to[k], from[k], cache[k] || (cache[k] = {}))
-      : is_equal(cache[k], from[k]) || is_equal(to[k], (cache[k] = from[k])) || (to[k] = from[k])
+      : is_equal(cache[k], from[k]) ||
+        is_equal(to[k], (cache[k] = from[k])) ||
+        (to[k] = from[k])
   }
 }
 
@@ -60,7 +64,13 @@ export function deep_update_props(to: any, from: any, cache: any) {
 
 import type { IMaybeSubscribable } from 'rease'
 
-import type { autoDetectRenderer, AutoDetectOptions, Renderer, Container, Filter } from 'pixi.js'
+import type {
+  autoDetectRenderer,
+  AutoDetectOptions,
+  Renderer,
+  Container,
+  Filter,
+} from 'pixi.js'
 
 import type { Renderer as PixiRenderer } from './Renderer'
 import type { Filter as PixiFilter } from './Filter'
@@ -68,9 +78,10 @@ import type { Scene as PixiScene } from './Scene'
 export type PixiRease = PixiRenderer | PixiFilter | PixiScene
 
 export type Props<R, P> = {
-  onCreate?: (rease: R, pixi: P) => any
-  onRender?: (rease: R, t: number) => any
-  onRenderCapture?: (rease: R, t: number) => any
+  onResize?: (this: R) => any
+  onCreate?: (this: R, pixi: P) => any
+  onRender?: (this: R, t: number) => any
+  onRenderCapture?: (this: R, t: number) => any
   props?: IDeepPartial<P>
   $props$?: IMaybeSubscribable<IDeepPartial<P>>
   $onDraw$?: IMaybeSubscribable<(rease: R, pixi: P) => any>
@@ -97,13 +108,15 @@ function watch_onDraw(this: PixiRease, onDraw: any) {
 }
 export function parse_pixi_props(
   rease: PixiRease,
-  { props, $props$, $onDraw$, onCreate, onRender, onRenderCapture }: Props<any, any>
+  { props, $props$, $onDraw$, onResize, onCreate, onRender, onRenderCapture }: Props<any, any>
 ) {
-  if (onCreate) onCreate(rease, rease.pixi)
-  if (onRender) rease.on('pixi-render', onRender)
-  if (onRenderCapture) rease.on('pixi-render', onRenderCapture, void 0, true)
-
   if (props) deep_update_props(rease.pixi, props, {})
   if ($props$) rease.watch($props$, watch_props, { rease, cache: {} })
+
+  if (onCreate) onCreate.call(rease, rease.pixi)
+  if (onResize) rease.on('pixi-resize', onResize, rease)
+  if (onRender) rease.on('pixi-render', onRender, rease)
+  if (onRenderCapture) rease.on('pixi-render', onRenderCapture, rease, true)
+
   if ($onDraw$) rease.watch($onDraw$, watch_onDraw, rease)
 }

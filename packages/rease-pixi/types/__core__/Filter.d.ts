@@ -4,7 +4,9 @@ import { type Filter } from 'pixi.js';
 import type { AlphaFilter, AlphaFilterOptions, BlurFilter, BlurFilterOptions, BlurFilterPass, BlurFilterPassOptions, ColorMatrixFilter, FilterOptions, DisplacementFilter, Sprite, DisplacementFilterOptions, NoiseFilter, NoiseFilterOptions } from 'pixi.js';
 import { type PropsFilter } from './utils';
 declare class PixiFilter<Pixi extends Filter = Filter> extends Rease {
-    readonly pixi: Pixi;
+    readonly pixi: Pixi & {
+        _rease?: PixiFilter<Pixi>;
+    };
     PixiScene?: PixiScene;
     constructor(props: PropsFilter<AlphaFilter> & {
         options?: AlphaFilterOptions;
@@ -25,5 +27,7 @@ declare class PixiFilter<Pixi extends Filter = Filter> extends Rease {
         options?: NoiseFilterOptions;
     });
     update(): void;
+    hookMove(rease: Rease, _from: Rease | null, _to: Rease | null): void;
+    hookDestroy(iam: this): void;
 }
 export { PixiFilter as Filter };

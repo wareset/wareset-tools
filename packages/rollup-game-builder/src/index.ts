@@ -21,7 +21,9 @@ import { minify as terser } from 'terser'
 import { transform as sucrase } from 'sucrase'
 import { transformAsync as babel } from '@babel/core'
 
-import * as MATH_SAFE from 'math-safe'
+import _index_html from './_index.html'
+
+// import * as MATH_SAFE from 'math-safe'
 
 // let livereload: Plugin | null
 
@@ -50,8 +52,11 @@ export default function ({
   // livereload =
   //   !production && !livereload ? rollupLivereload({ watch: appDevDir, delay: 99 }) : null
 
-  const _INDEX_HTML = fs
-    .readFileSync(path.resolve(indexHtmlFile), 'utf8')
+  const _INDEX_HTML = (
+    fs.existsSync((indexHtmlFile = path.resolve(indexHtmlFile)))
+      ? fs.readFileSync(indexHtmlFile, 'utf8')
+      : (fs.writeFileSync(indexHtmlFile, _index_html), _index_html)
+  )
     .replace(/\s*<!--[^]*?-->|\s*\/\*[^]*?\*\/|\s*\/\/[^\n]*/g, '')
     .replace(/\s*\n/g, '\n')
 
@@ -190,7 +195,7 @@ export default function ({
                     transforms: ['jsx', 'typescript'],
                     production: true,
                     jsxRuntime: 'classic', // "classic" | "automatic" | "preserve"
-                    jsxImportSource: 'rease',
+                    // jsxImportSource: 'rease',
                     // jsxPragma: 'rease.h',
                     // jsxFragmentPragma: 'rease.ReaseFragment'
                   }).code
@@ -220,17 +225,17 @@ export default function ({
 
           //
           // MATH
-          (() => {
-            const obj = { MATH: ['math-safe', '*'] } as any
-            // Object.keys(MATH_SAFE).forEach((v) => {
-            //   obj['Math.' + v] = ['math-safe', v]
-            // })
-            return rollupInject(obj)
-            // return inject({
-            //   Math: ['math-safe', '*'],
-            //   MATH: ['math-safe', '*']
-            // })
-          })(),
+          // (() => {
+          //   const obj = { MATH: ['math-safe', '*'] } as any
+          //   // Object.keys(MATH_SAFE).forEach((v) => {
+          //   //   obj['Math.' + v] = ['math-safe', v]
+          //   // })
+          //   return rollupInject(obj)
+          //   // return inject({
+          //   //   Math: ['math-safe', '*'],
+          //   //   MATH: ['math-safe', '*']
+          //   // })
+          // })(),
           // MATH
           //
 

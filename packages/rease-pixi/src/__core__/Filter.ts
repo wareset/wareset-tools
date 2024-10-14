@@ -65,7 +65,8 @@ function removePixiScene(iam: PixiFilter) {
     iam.PixiScene = void 0
   }
 }
-function _move(iam: PixiFilter) {
+
+function move(iam: PixiFilter) {
   removePixiScene(iam)
   const { parent, next } = iam.findParentOrNext(PixiScene, PixiFilter)
   const filter = iam.pixi
@@ -84,13 +85,8 @@ function _move(iam: PixiFilter) {
   }
 }
 
-function _destroy(iam: PixiFilter) {
-  removePixiScene(iam)
-  iam.pixi.destroy()
-}
-
 class PixiFilter<Pixi extends Filter = Filter> extends Rease {
-  readonly pixi: Pixi
+  readonly pixi: Pixi & { _rease?: PixiFilter<Pixi> }
   PixiScene?: PixiScene
 
   constructor(props: PropsFilter<AlphaFilter> & { options?: AlphaFilterOptions })
@@ -114,13 +110,30 @@ class PixiFilter<Pixi extends Filter = Filter> extends Rease {
   constructor(props: PropsFilter<Pixi> & { options?: any }) {
     super()
     this.pixi = new props.pixi(props.options)
-    this.onMove(_move), _move(this)
+    this.pixi._rease = this
+    this.onMove(this.hookMove, this), move(this)
     parse_pixi_props(this, props)
-    this.onDestroy(_destroy)
+    this.onDestroy(this.hookDestroy)
   }
 
   update() {
     this.PixiScene && this.PixiScene.update()
+  }
+
+  hookMove(rease: Rease, _from: Rease | null, _to: Rease | null) {
+    if (rease && rease !== this) {
+      for (let parent = this as Rease; (parent = parent.parent!); ) {
+        if (parent === this.PixiScene) return
+        if (parent === rease || parent instanceof PixiScene) break
+      }
+    }
+
+    move(this)
+  }
+
+  hookDestroy(iam: this) {
+    removePixiScene(iam)
+    iam.pixi.destroy()
   }
 }
 

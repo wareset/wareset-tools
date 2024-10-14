@@ -14,9 +14,10 @@ import type { Filter as PixiFilter } from './Filter';
 import type { Scene as PixiScene } from './Scene';
 export type PixiRease = PixiRenderer | PixiFilter | PixiScene;
 export type Props<R, P> = {
-    onCreate?: (rease: R, pixi: P) => any;
-    onRender?: (rease: R, t: number) => any;
-    onRenderCapture?: (rease: R, t: number) => any;
+    onResize?: (this: R) => any;
+    onCreate?: (this: R, pixi: P) => any;
+    onRender?: (this: R, t: number) => any;
+    onRenderCapture?: (this: R, t: number) => any;
     props?: IDeepPartial<P>;
     $props$?: IMaybeSubscribable<IDeepPartial<P>>;
     $onDraw$?: IMaybeSubscribable<(rease: R, pixi: P) => any>;
@@ -33,4 +34,4 @@ export type PropsRenderer = Props<PixiRenderer, Renderer> & {
     options?: Partial<AutoDetectOptions>;
     children?: any;
 };
-export declare function parse_pixi_props(rease: PixiRease, { props, $props$, $onDraw$, onCreate, onRender, onRenderCapture }: Props<any, any>): void;
+export declare function parse_pixi_props(rease: PixiRease, { props, $props$, $onDraw$, onResize, onCreate, onRender, onRenderCapture }: Props<any, any>): void;

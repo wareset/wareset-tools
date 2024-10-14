@@ -9,12 +9,29 @@ const ctx = canvas.getContext('2d')!
 // document.body.appendChild(canvas)
 
 import * as suits from './__core__/gen/svg/d_suits'
-const SUITS = {} as { [K in keyof typeof suits]: Path2D }
+const SUITS = {} as Readonly<{ [K in keyof typeof suits]: Path2D }>
 for (const k in suits) (SUITS as any)[k] = new Path2D((suits as any)[k])
 
-import * as values from './__core__/gen/svg/d_values'
-const VALUES = {} as { [K in keyof typeof values]: Path2D }
-for (const k in values) (VALUES as any)[k] = new Path2D((values as any)[k])
+import * as ranks_bold from './__core__/gen/svg/d_values'
+export const RANKS_BOLD = {} as Readonly<{ [K in keyof typeof ranks_bold]: Path2D }>
+for (const k in ranks_bold) (RANKS_BOLD as any)[k] = new Path2D((ranks_bold as any)[k])
+
+import * as ranks_thin from './__core__/gen/svg/d_values_v2'
+export const RANKS_THIN = {} as Readonly<{ [K in keyof typeof ranks_thin]: Path2D }>
+for (const k in ranks_thin) (RANKS_THIN as any)[k] = new Path2D((ranks_thin as any)[k])
+
+const SUITS_NORMALIZED = {
+  rh: SUITS.s_1_1,
+  rn: SUITS.s_1_0,
+  bh: SUITS.s_0_1,
+  bn: SUITS.s_0_0,
+} as const
+export { SUITS_NORMALIZED as SUITS }
+
+export const RANKS_TYPES = {
+  thin: RANKS_THIN,
+  bold: RANKS_BOLD,
+} as const
 
 function roundRectPath(
   w: number,
@@ -36,15 +53,26 @@ function roundRectPath(
     + ' Z';
 }
 
+let RANKS: typeof RANKS_BOLD
+
 let WIDTH: number
 let HEIGHT: number
-let CARD_SUIT: Path2D
-let CARD_VALUE: Path2D
-let BG_COLOR: string | CanvasGradient | CanvasPattern
-let BORDER_COLOR: string | CanvasGradient | CanvasPattern
-let CARD_COLOR: string | CanvasGradient | CanvasPattern | null
+let SUIT_PATH: Path2D
+let RANK_PATH: Path2D
 
-const lft = canvasarea(() => {})
+let BORDER_RADIUS: number
+let BORDER_COLOR: string | CanvasGradient | CanvasPattern
+
+let SUIT_COLOR: string | CanvasGradient | CanvasPattern | null
+let FRONT_COLOR: string | CanvasGradient | CanvasPattern
+let SHIRT_COLOR: string | CanvasGradient | CanvasPattern | null
+
+let OUSIDE_ROUND_RECT: Path2D | null
+let INSIDE_ROUND_RECT: Path2D | null
+
+const noop = () => {}
+
+const lft = canvasarea(noop)
 const rgt = canvasarea((ctx: CanvasareaRenderingContext2D) => {
   // ctx.areaScale(WIDTH / 100, HEIGHT / 140)
   ctx.areaShift(WIDTH, HEIGHT)
@@ -54,31 +82,44 @@ const rgt = canvasarea((ctx: CanvasareaRenderingContext2D) => {
 //
 // AREA BORDER
 //
-const area_1_clear_and_draw_border = canvasarea((ctx) => {
-  let rad: number
-  const wh = WIDTH + HEIGHT
-  const rx = WIDTH / 33
+const area_0_clear = canvasarea((ctx) => {
   ctx.clearRect(0, 0, WIDTH, HEIGHT)
+})
+const area_1_draw_borders_or_shirt = canvasarea((ctx) => {
+  let brad = BORDER_RADIUS
+  const rx = WIDTH / 33
+  const lw = (ctx.lineWidth = (WIDTH + HEIGHT) / 300) / ctx.GLOBAL_SCALE_MEAN
+
   ctx.strokeStyle = BORDER_COLOR
 
-  const lw = (ctx.lineWidth = wh / 300) / ctx.GLOBAL_SCALE_MEAN
-
-  rad = wh / 66
+  OUSIDE_ROUND_RECT ||
+    (OUSIDE_ROUND_RECT = new Path2D(
+      roundRectPath(WIDTH - lw, HEIGHT - lw, brad, brad, brad, brad)
+    ))
   ctx.areaShift(lw / 2, lw / 2)
-  ctx.stroke(new Path2D(roundRectPath(WIDTH - lw, HEIGHT - lw, rad, rad, rad, rad)))
-  // ctx.beginPath()
-  // ctx.rect(rx, rx, WIDTH - rx * 2, HEIGHT - rx * 2)
-  // ctx.closePath()
-  rad /= WIDTH / (WIDTH - rx * 2)
+  if (SHIRT_COLOR) {
+    ctx.fillStyle = SHIRT_COLOR
+    ctx.fill(OUSIDE_ROUND_RECT)
+
+    if (SHIRT_COLOR !== FRONT_COLOR) {
+      // TODO
+    }
+  }
+  ctx.stroke(OUSIDE_ROUND_RECT)
+
+  INSIDE_ROUND_RECT ||
+    ((brad /= WIDTH / (WIDTH - rx * 2)),
+    (INSIDE_ROUND_RECT = new Path2D(
+      roundRectPath(WIDTH - rx * 2, HEIGHT - rx * 2, brad, brad, brad, brad)
+    )))
   ctx.areaShift(rx, rx)
-  ctx.lineWidth = 2 / ctx.GLOBAL_SCALE_MEAN
-  ctx.stroke(new Path2D(roundRectPath(WIDTH - rx * 2, HEIGHT - rx * 2, rad, rad, rad, rad)))
+  ctx.stroke(INSIDE_ROUND_RECT)
 })
 
 //
 // AREA VALUE AND SUIT
 //
-const area_2_draw_value = (() => {
+const area_2_draw_rank = (() => {
   const _move = (ctx: CanvasareaRenderingContext2D) => {
     const w2 = WIDTH / 2
     const h2 = HEIGHT / 2
@@ -89,25 +130,25 @@ const area_2_draw_value = (() => {
     ctx.areaPivot(16, 16)
     const wh = WIDTH + HEIGHT
 
-    const sc = wh / 325
+    const sc = wh / 350
     const rx = WIDTH / 33 + 16 * sc
     ctx.areaShift(rx, rx)
     ctx.areaScale(sc)
     ctx.lineWidth = (WIDTH + HEIGHT) / 100 / ctx.GLOBAL_SCALE_MEAN
-    ctx.stroke(CARD_VALUE)
-    ctx.fill(CARD_VALUE)
+    ctx.stroke(RANK_PATH)
+    ctx.fill(RANK_PATH)
 
     const sc2 = wh / 500
     const coef = 0 // (sc - sc2) * 12
     ctx.areaShift(WIDTH - rx + coef, rx - coef)
     ctx.areaScale(sc2)
     ctx.lineWidth = (WIDTH + HEIGHT) / 100 / ctx.GLOBAL_SCALE_MEAN
-    ctx.stroke(CARD_SUIT)
-    ctx.fill(CARD_SUIT)
+    ctx.stroke(SUIT_PATH)
+    ctx.fill(SUIT_PATH)
   }
   const root = canvasarea((ctx) => {
-    ctx.fillStyle = CARD_COLOR!
-    ctx.strokeStyle = BG_COLOR
+    ctx.fillStyle = SUIT_COLOR!
+    ctx.strokeStyle = FRONT_COLOR
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.miterLimit = 0
@@ -124,8 +165,8 @@ let PLACE_SUITS_SCALE = 1
 
 const fill = (ctx: CanvasareaRenderingContext2D, isValue?: boolean) => {
   ctx.areaPivot(16, 16)
-  ctx.fillStyle = CARD_COLOR!
-  ctx.fill(isValue ? CARD_VALUE : CARD_SUIT)
+  ctx.fillStyle = SUIT_COLOR!
+  ctx.fill(isValue ? RANK_PATH : SUIT_PATH)
 }
 
 const suitOne = canvasarea((ctx: CanvasareaRenderingContext2D) => {
@@ -133,11 +174,11 @@ const suitOne = canvasarea((ctx: CanvasareaRenderingContext2D) => {
   ctx.areaShift(WIDTH / 2, HEIGHT / 2)
   fill(ctx)
 })
-// const suitValue = canvasarea((ctx: CanvasareaRenderingContext2D) => {
-//   ctx.areaScale(PLACE_SUITS_SCALE * 2)
-//   ctx.areaShift(WIDTH / 2, HEIGHT / 2)
-//   fill(ctx, true)
-// })
+const suitValue = canvasarea((ctx: CanvasareaRenderingContext2D) => {
+  ctx.areaScale(PLACE_SUITS_SCALE * 2)
+  ctx.areaShift(WIDTH / 2, HEIGHT / 2)
+  fill(ctx, true)
+})
 
 const suitTop = canvasarea((ctx: CanvasareaRenderingContext2D) => {
   ctx.areaScale(PLACE_SUITS_SCALE)
@@ -241,11 +282,11 @@ const suit10 = (lft: Canvasarea, rgt: Canvasarea) => {
   rgt.attachArea(suitMiddle)
 }
 const suit11 = (_lft: Canvasarea) => {
-  // _lft.attachArea(suitValue)
+  _lft.attachArea(suitValue)
 }
 
 const DRAWS = [
-  suit1, //  ---
+  noop, //  --
   suit1, //  1
   suit2, //  2
   suit3, //  3
@@ -258,29 +299,40 @@ const DRAWS = [
   suit10, //10 a
   suit11, //11 b
   suit11, //12 c
-  suit11, // 13 d
+  suit11, //13 d
 ]
 
-export default function cardsFactory({
-  width = 100,
-  height = width * 1.4,
-  bgColor = '#fff',
-  borderColor = '#000',
-  rhColor = '#f00', // ♥
-  rnColor = '#f80', // ♦
-  bhColor = '#000', // ♠
-  bnColor = '#080', //  ♣
-}: {
+export type ICardsFactoryOptions = {
   width?: number
   height?: number
-  bgColor?: string | CanvasGradient | CanvasPattern
   borderColor?: string | CanvasGradient | CanvasPattern
+  borderRadius?: number
   rhColor?: string | CanvasGradient | CanvasPattern | null
   bhColor?: string | CanvasGradient | CanvasPattern | null
   rnColor?: string | CanvasGradient | CanvasPattern | null
   bnColor?: string | CanvasGradient | CanvasPattern | null
-} = {}) {
-  const res = {} as { [key: string]: string }
+  frontColor?: string | CanvasGradient | CanvasPattern
+  shirtColor?: string | CanvasGradient | CanvasPattern | null
+  fontWeight?: keyof typeof RANKS_TYPES
+}
+
+export default function cardsFactory({
+  width = 100,
+  height = width * 1.4,
+  borderColor = '#000',
+  borderRadius = (width + height) / 66,
+  rhColor = '#f00', // ♥
+  rnColor = '#f80', // ♦
+  bhColor = '#000', // ♠
+  bnColor = '#080', //  ♣
+  frontColor = '#fff',
+  shirtColor = '#08f',
+  fontWeight = 'bold',
+}: ICardsFactoryOptions = {}) {
+  const basic = {} as any
+  const chars = {} as any
+  const other = {} as any
+  // const jokers = {} as any
   // rhColor = null
   // rnColor = null
   // bhColor = null
@@ -290,69 +342,92 @@ export default function cardsFactory({
     [rnColor, rhColor],
   ] as const
 
-  BG_COLOR = bgColor
+  RANKS = RANKS_TYPES[fontWeight] || RANKS_BOLD
+
+  FRONT_COLOR = frontColor
   BORDER_COLOR = borderColor
+  BORDER_RADIUS = borderRadius
   canvas.width = WIDTH = width
   canvas.height = HEIGHT = height
 
-  PLACE_SUITS_SCALE = (WIDTH + HEIGHT) / 375
+  PLACE_SUITS_SCALE = (WIDTH + HEIGHT) / 350
+
+  SHIRT_COLOR = null
+  OUSIDE_ROUND_RECT = null
+  INSIDE_ROUND_RECT = null
 
   // let jjj = 0
   for (let color = 2 as 0 | 1; color-- > 0; ) {
     for (let heart = 2 as 0 | 1; heart-- > 0; ) {
-      if ((CARD_COLOR = COLORS[color][heart]) == null) continue
-      CARD_SUIT = SUITS[`s_${color as 1}_${heart as 1}`]
-      for (let value = 14; value-- > 1; ) {
+      if (!(SUIT_COLOR = COLORS[color][heart])) continue
+      SUIT_PATH = SUITS[`s_${color as 1}_${heart as 1}`]
+      for (let rank = 14; rank-- > 1; ) {
         // if (++jjj > 6) continue
-        CARD_VALUE = VALUES[`v_${value as 1}`]
+        RANK_PATH = RANKS[`v_${rank as 1}`]
         lft.detachAllAreas()
         rgt.detachAllAreas()
 
-        area_1_clear_and_draw_border.render(ctx)
-        area_2_draw_value.render(ctx)
-        DRAWS[value](lft, rgt)
+        area_0_clear.render(ctx)
+        area_2_draw_rank.render(ctx)
+        if (rank < 11) DRAWS[rank](lft, rgt)
         lft.render(ctx)
         rgt.render(ctx)
+        area_1_draw_borders_or_shirt.render(ctx)
 
-        // const key = `c${color}${heart}${value > 9 ? '' : '0'}${value}`
-        const key = `${color ? 'r' : 'b'}${heart ? 'h' : 'n'}${value.toString(16)}`
-        res[key] = canvas.toDataURL()
+        const key = `${color ? 'r' : 'b'}${heart ? 'h' : 'n'}${rank.toString(16)}`
+        basic[key] = canvas.toDataURL()
+
+        if (rank > 10) {
+          lft.detachAllAreas()
+          rgt.detachAllAreas()
+
+          area_0_clear.render(ctx)
+          DRAWS[rank](lft, rgt)
+          lft.render(ctx)
+          rgt.render(ctx)
+
+          chars[key] = canvas.toDataURL()
+        }
       }
     }
   }
 
-  // return res as Record<
-  //   `${'r' | 'b'}${'h' | 'n'}${
-  //     | '1'
-  //     | '2'
-  //     | '3'
-  //     | '4'
-  //     | '5'
-  //     | '6'
-  //     | '7'
-  //     | '8'
-  //     | '9'
-  //     | 'a'
-  //     | 'b'
-  //     | 'c'
-  //     | 'd'}`,
-  //   string
-  // >
+  if ((SHIRT_COLOR = frontColor)) {
+    area_0_clear.render(ctx)
+    area_1_draw_borders_or_shirt.render(ctx)
+    other['front'] = canvas.toDataURL()
+  }
 
-  return res as Readonly<{
-    [key in `${'r' | 'b'}${'h' | 'n'}${
-      | '1'
-      | '2'
-      | '3'
-      | '4'
-      | '5'
-      | '6'
-      | '7'
-      | '8'
-      | '9'
-      | 'a'
-      | 'b'
-      | 'c'
-      | 'd'}`]: string
-  }>
+  if ((SHIRT_COLOR = shirtColor)) {
+    area_0_clear.render(ctx)
+    area_1_draw_borders_or_shirt.render(ctx)
+    other['shirt'] = canvas.toDataURL()
+  }
+
+  return { basic, chars, other } as {
+    basic: Readonly<{
+      [key in `${'r' | 'b'}${'h' | 'n'}${
+        | '1'
+        | '2'
+        | '3'
+        | '4'
+        | '5'
+        | '6'
+        | '7'
+        | '8'
+        | '9'
+        | 'a'
+        | 'b'
+        | 'c'
+        | 'd'}`]?: string
+    }>
+
+    chars: Readonly<{
+      [key in `${'r' | 'b'}${'h' | 'n'}${'b' | 'c' | 'd'}`]?: string
+    }>
+
+    other: Readonly<{
+      [key in `${'shirt' | 'front'}`]?: string
+    }>
+  }
 }

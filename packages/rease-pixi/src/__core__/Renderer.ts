@@ -25,7 +25,7 @@
 //   }
 // }
 
-import { Rease } from 'rease'
+import { Rease, requestAnimationFrame } from 'rease'
 
 import { type Renderer, type Container } from 'pixi.js'
 
@@ -35,9 +35,16 @@ import { type Scene as PixiScene } from './Scene'
 
 import { type PropsRenderer, parse_pixi_props } from './utils'
 
-function _PixiRendererAwait(this: { iam: PixiRenderer; props: PropsRenderer }, renderer: Renderer) {
+// const _perf = typeof performance === 'object' ? performance : Date
+// const startTime = _perf.now()
+
+function _PixiRendererAwait(
+  this: { iam: PixiRenderer; props: PropsRenderer },
+  renderer: Renderer
+) {
   const { iam, props } = this
   iam.pixi = renderer
+  iam.pixi._rease = iam
   iam.onDestroy(() => ((iam.pixi = void 0), renderer.destroy()))
 
   if (!iam.destroyed) {
@@ -46,9 +53,15 @@ function _PixiRendererAwait(this: { iam: PixiRenderer; props: PropsRenderer }, r
     canvasStyle.width = canvasStyle.height = '100%'
 
     let updateAllow = false
+    let needResize = true
     const render = (t: number) => {
       updateAllow = true
       if (iam._renderOptions) {
+        if (needResize) {
+          needResize = false
+          renderer.resize(canvas.clientWidth, canvas.clientHeight)
+          iam.emitDeep('pixi-resize')
+        }
         iam.emitDeep('pixi-render', t)
         renderer.render(iam._renderOptions)
       }
@@ -59,9 +72,17 @@ function _PixiRendererAwait(this: { iam: PixiRenderer; props: PropsRenderer }, r
 
     const ReaseCanvas = iam.insert(createElement(RElement, { node: canvas }))[0]
 
+    let resizeCancel: any
+    const resize = () => {
+      needResize = true
+      iam.update()
+    }
+
     iam.onDestroy(
       listen(canvas, 'resize', () => {
-        renderer.resize(canvas.clientWidth, canvas.clientHeight), iam.update()
+        if (resizeCancel != null) clearTimeout(resizeCancel)
+        resizeCancel = setTimeout(resize, 17)
+        // resize()
       })
     )
 
@@ -75,14 +96,14 @@ function _PixiRendererAwait(this: { iam: PixiRenderer; props: PropsRenderer }, r
 }
 
 class PixiRenderer<Pixi extends Renderer = Renderer> extends Rease {
-  pixi?: Pixi
+  pixi?: Pixi & { _rease?: PixiRenderer<Pixi> }
   PixiScene?: PixiScene
   _renderOptions?: { container: Container }
   constructor(props: PropsRenderer) {
     super()
     this.await(props.autoDetectRenderer(props.options || {}), _PixiRendererAwait, {
       iam: this,
-      props
+      props,
     })
   }
 
