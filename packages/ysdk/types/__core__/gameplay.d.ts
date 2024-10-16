@@ -9,7 +9,7 @@
 
 Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен.
 */
-export declare const gameStart: () => void;
+export declare const gameStart: () => Promise<boolean | void>;
 /**
 Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
 
@@ -20,4 +20,4 @@ export declare const gameStart: () => void;
 уход в другую вкладку браузера.
 Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
 */
-export declare const gameStop: () => void;
+export declare const gameStop: () => Promise<boolean | void>;

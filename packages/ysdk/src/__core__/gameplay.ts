@@ -13,11 +13,12 @@ let isStarted = false
 
 Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен.
 */
-export const gameStart = () => {
+export const gameStart = () =>
   init()
-    .then((ysdk) => isStarted || ((isStarted = true), ysdk.features.GameplayAPI!.start()))
+    .then((ysdk) =>
+      isStarted ? false : ((isStarted = true), ysdk.features.GameplayAPI!.start(), true)
+    )
     .catch(logError)
-}
 
 /**
 Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
@@ -29,8 +30,9 @@ export const gameStart = () => {
 уход в другую вкладку браузера.
 Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
 */
-export const gameStop = () => {
+export const gameStop = () =>
   init()
-    .then((ysdk) => !(isStarted && ((isStarted = false), ysdk.features.GameplayAPI!.stop())))
+    .then((ysdk) =>
+      isStarted ? ((isStarted = false), ysdk.features.GameplayAPI!.stop(), true) : false
+    )
     .catch(logError)
-}

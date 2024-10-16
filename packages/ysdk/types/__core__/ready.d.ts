@@ -6,4 +6,4 @@
 все элементы готовы к взаимодействию с игроком;
 нет экранов загрузки.
 */
-export declare const ready: () => void;
+export declare const ready: () => Promise<true | void>;

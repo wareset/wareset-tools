@@ -13,7 +13,12 @@ REVIEW_ALREADY_REQUESTED — запрос уже отправлен, ожида�
 REVIEW_WAS_REQUESTED — запрос уже отправлен, пользователь совершил действие: поставил оценку или закрыл всплывающее окно.
 UNKNOWN — запрос не был отправлен, ошибка на стороне Яндекса.
 */
-export declare const reviewCan: () => any;
+export declare const reviewCan: () => Promise<void | {
+    value: true;
+} | {
+    value: false;
+    reason: "NO_AUTH" | "GAME_RATED" | "REVIEW_ALREADY_REQUESTED" | "REVIEW_WAS_REQUESTED" | "UNKNOWN";
+}>;
 /**
 Чтобы предложить пользователю оценить игру, используйте метод ysdk.feedback.requestReview().
 
@@ -21,4 +26,4 @@ export declare const reviewCan: () => any;
 
 Если перед выполнением запроса вы проигнорировали метод ysdk.feedback.canReview(), значение feedbackSent: false может сопровождаться ошибкой use canReview before requestReview.
 */
-export declare const reviewRun: () => any;
+export declare const reviewRun: () => Promise<boolean | void>;

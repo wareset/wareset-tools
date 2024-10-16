@@ -10,8 +10,7 @@ let isReady = false
 все элементы готовы к взаимодействию с игроком;
 нет экранов загрузки.
 */
-export const ready = () => {
+export const ready = () =>
   init()
-    .then((ysdk) => isReady || ((isReady = true), ysdk.features.LoadingAPI!.ready()))
+    .then((ysdk) => isReady || ((isReady = true), ysdk.features.LoadingAPI!.ready(), isReady))
     .catch(logError)
-}

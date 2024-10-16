@@ -15,7 +15,7 @@ onError — вызывается при возникновении ошибки.
 
 onOffline — вызывается при потере сетевого соединения (переходе в офлайн-режим).
 */
-export declare const advImage: (callbacks?: Parameters<ISDK['adv']['showFullscreenAdv']>[0]['callbacks']) => void;
+export declare const advImage: (callbacks?: Parameters<ISDK['adv']['showFullscreenAdv']>[0]['callbacks']) => Promise<void>;
 /**
 Видеореклама с вознаграждением (rewarded video)
 Видео с вознаграждением — блоки с видеорекламой, которые используются для монетизации игр. За просмотр видеоролика пользователь получает награду или внутриигровую валюту.
@@ -32,4 +32,4 @@ onError — вызывается при возникновении ошибки.
 
 onRewarded — вызывается, когда засчитывается просмотр видеорекламы. Укажите в данной функции, какую награду пользователь получит после просмотра.
 */
-export declare const advVideo: (callbacks?: Parameters<ISDK['adv']['showRewardedVideo']>[0]['callbacks']) => void;
+export declare const advVideo: (callbacks?: Parameters<ISDK['adv']['showRewardedVideo']>[0]['callbacks']) => Promise<void>;

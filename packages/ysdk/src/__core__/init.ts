@@ -9,8 +9,7 @@ export const logError = (error: any) => {
 }
 
 let _init: Promise<ISDK>
-export const init = () =>
-  // @ts-ignore
+export const init = (): Promise<ISDK> =>
   _init ||
   (_init =
     // @ts-ignore
@@ -25,7 +24,7 @@ export const init = () =>
 // Auth
 //
 let _authDialog: Promise<boolean> | null
-export const openAuthDialog = () =>
+export const openAuthDialog = (): Promise<boolean> =>
   _authDialog ||
   (_authDialog = init()
     .then((ysdk) =>
@@ -40,7 +39,7 @@ export const openAuthDialog = () =>
 // Storage
 //
 let _getStorage: Promise<typeof localStorage>
-export const getStorage = () =>
+export const getStorage = (): ReturnType<ISDK['getStorage']> =>
   _getStorage ||
   (_getStorage = init()
     .then((ysdk) => ysdk.getStorage())
@@ -49,7 +48,9 @@ export const getStorage = () =>
 //
 // Flags
 //
-export const getFlags = (params?: Parameters<ISDK['getFlags']>[0]) =>
+export const getFlags = (
+  params?: Parameters<ISDK['getFlags']>[0]
+): ReturnType<ISDK['getFlags']> =>
   init()
     .then((ysdk) => ysdk.getFlags(params))
     .catch((e) => (logError(e), SDK.getFlags(params)))
@@ -58,12 +59,14 @@ export const getFlags = (params?: Parameters<ISDK['getFlags']>[0]) =>
 // Player
 //
 let _player: IPlayer
-let _getPlayer: any
+let _getPlayer: ReturnType<ISDK['getPlayer']>
 let _scopes: boolean
 const throwPlayer = () => {
   throw new Error('getPlayer: scopes must be ' + _scopes)
 }
-export const getPlayer = (params?: Parameters<ISDK['getPlayer']>[0]) =>
+export const getPlayer = (
+  params?: Parameters<ISDK['getPlayer']>[0]
+): ReturnType<ISDK['getPlayer']> =>
   _getPlayer
     ? _scopes !== (!params || params.scopes)
       ? throwPlayer()
