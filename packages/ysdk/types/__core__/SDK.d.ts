@@ -19,7 +19,7 @@ export declare const SDK: {
         getUniqueID: () => string;
         getName: () => string;
         getMode: () => "" | "lite";
-        etPhoto: (_size: 'small' | 'medium' | 'large') => string;
+        getPhoto: (_size: 'small' | 'medium' | 'large') => string;
         getPayingStatus: () => "unknown" | "paying" | "partially_paying" | "not_paying";
         getData: (keys?: string[]) => Promise<{
             [key: string]: string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | (string | number | boolean | any | {

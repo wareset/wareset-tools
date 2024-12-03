@@ -59,20 +59,21 @@ export const getFlags = (
 // Player
 //
 let _player: IPlayer
-let _getPlayer: ReturnType<ISDK['getPlayer']>
-let _scopes: boolean
+let _getPlayer: any
+let _scopes = false
 const throwPlayer = () => {
   throw new Error('getPlayer: scopes must be ' + _scopes)
 }
 export const getPlayer = (
   params?: Parameters<ISDK['getPlayer']>[0]
-): ReturnType<ISDK['getPlayer']> =>
+): ReturnType<ISDK['getPlayer']> => (
+  params &&
+    'scopes' in params &&
+    (_getPlayer ? !_scopes !== !params.scopes && throwPlayer() : (_scopes = !!params.scopes)),
   _getPlayer
-    ? _scopes !== (!params || params.scopes)
-      ? throwPlayer()
-      : _getPlayer
-    : ((_scopes = !params || params.scopes),
-      (_getPlayer = init()
-        .then((ysdk) => ysdk.getPlayer(params))
+    ? _getPlayer
+    : (_getPlayer = init()
+        .then((ysdk) => ysdk.getPlayer({ scopes: _scopes }))
         .then((player) => (_player = player))
-        .catch((e) => (logError(e), _player || SDK.getPlayer(params)))))
+        .catch((e) => (logError(e), _player || SDK.getPlayer())))
+)

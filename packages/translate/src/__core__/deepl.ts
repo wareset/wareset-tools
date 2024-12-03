@@ -34,7 +34,7 @@ export const DEEPL_LANGS = {
   cs: 'чешский',
   sv: 'шведский',
   et: 'эстонский',
-  ja: 'японский'
+  ja: 'японский',
 } as const
 
 export const deepl = (() => {
@@ -42,13 +42,14 @@ export const deepl = (() => {
   let browser: Browser | null
   let item: any
   let CACHE: any
-  const CACHE_PATH = path.join(os.tmpdir(), 'wareset_tools_deepl.json')
+  const CACHE_PATH = path.join(os.homedir(), '.wareset_tools_deepl.cache.json')
   const QUEUE: any[] = []
+  console.log('DT cache: ' + CACHE_PATH)
 
   const timeout = (ms = 100) => new Promise((res) => setTimeout(res, ms))
 
   const response = async (response: any) => {
-    if (!item) return
+    if (!item || !item.res) return
     try {
       const result = JSON.parse((await response.buffer()).toString()).result
       if (!result) return
@@ -63,8 +64,23 @@ export const deepl = (() => {
         // console.error('deepl: incorrect result langs', { target: item, result })
         // throw new Error('deepl: incorrect result langs')
       }
+      console.log('DT: ' + item.text)
+      console.log(
+        ...translations.map((v: any) => v.beams.map((v: any) => v.sentences[0].text))
+      )
+      const res = translations
+        .map((v: any) =>
+          v.beams[0].sentences[0].text
+            .replace(/^<P>/, '')
+            .replace(/<\/P>$/, '')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, "'")
+        )
+        .join('\n')
 
-      const res = translations.map((v: any) => v.beams[0].sentences[0].text).join('\n')
       if (CACHE) {
         if (!CACHE[item.from]) CACHE[item.from] = {}
         if (!CACHE[item.from][item.to]) CACHE[item.from][item.to] = {}
@@ -73,7 +89,8 @@ export const deepl = (() => {
       }
 
       item.res(res)
-      await timeout(333)
+      item.res = null
+      await timeout(item.timeout)
       item = null
       goto()
     } catch {}
@@ -88,20 +105,23 @@ export const deepl = (() => {
         const { from, to, text } = item
 
         if (!CACHE) {
+          CACHE = {}
           if (fs.existsSync(CACHE_PATH)) {
-            CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'))
-          } else {
-            CACHE = {}
+            try {
+              CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')) || {}
+            } catch {}
           }
         }
 
         if (CACHE[from] && CACHE[from][to] && CACHE[from][to][text]) {
           item.res(CACHE[from][to][text])
+          item.res = null
           item = null
           goto()
         } else {
           if (!page) {
             page = await (browser = await puppeteer.launch({ headless: false })).newPage()
+            // await page.setUserAgent(customUA);
             page.on('response', response)
           }
           page.goto(`https://www.deepl.com/ru/translator#${from}/${to}/${encodeURI(text)}`)
@@ -112,13 +132,14 @@ export const deepl = (() => {
     }
   }
 
-  return (text = '', from = 'en', to = 'ru') => {
-    if (from === to || !(from in DEEPL_LANGS) || !(to in DEEPL_LANGS)) {
+  return (text = '', from = 'en', to = 'ru', timeout = 999): Promise<string> => {
+    if (from === to) return Promise.resolve(text)
+    if (!(from in DEEPL_LANGS) || !(to in DEEPL_LANGS)) {
       throw new Error(`wareset_tools_deepl: ${from} -> ${to}: - incorrect lang`)
     }
 
     return new Promise((res) => {
-      QUEUE.push({ res, text, from, to }), goto()
+      QUEUE.push({ res, text, from, to, timeout }), goto()
     })
   }
 })()

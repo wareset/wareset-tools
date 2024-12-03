@@ -38,7 +38,7 @@ export const SDK = ((setTimeout, random, Promise) => {
     getUniqueID: () => '1',
     getName: () => 'player',
     getMode: () => 'lite' as 'lite' | '',
-    etPhoto: (_size: 'small' | 'medium' | 'large') => '',
+    getPhoto: (_size: 'small' | 'medium' | 'large') => '',
 
     getPayingStatus: () =>
       'unknown' as 'paying' | 'partially_paying' | 'not_paying' | 'unknown',
@@ -183,7 +183,7 @@ export const SDK = ((setTimeout, random, Promise) => {
     },
 
     shortcut: {
-      canShowPrompt: () => Promise.resolve({ canShow: true }),
+      canShowPrompt: () => Promise.resolve({ canShow: false }),
       showPrompt: () => Promise.resolve({ outcome: 'accepted' as 'accepted' | '' }),
     },
   }

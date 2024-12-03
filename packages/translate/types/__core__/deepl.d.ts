@@ -30,4 +30,4 @@ export declare const DEEPL_LANGS: {
     readonly et: "эстонский";
     readonly ja: "японский";
 };
-export declare const deepl: (text?: string, from?: string, to?: string) => Promise<unknown>;
+export declare const deepl: (text?: string, from?: string, to?: string, timeout?: number) => Promise<string>;

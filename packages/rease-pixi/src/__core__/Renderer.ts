@@ -70,7 +70,7 @@ function _PixiRendererAwait(
       updateAllow && ((updateAllow = false), requestAnimationFrame(render))
     }
 
-    const ReaseCanvas = iam.insert(createElement(RElement, { node: canvas }))[0]
+    const ReaseCanvas = iam.insert(createElement(RElement, { this: canvas }))[0]
 
     let resizeCancel: any
     const resize = () => {

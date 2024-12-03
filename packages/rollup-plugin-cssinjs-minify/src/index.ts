@@ -9,7 +9,8 @@ export default function () {
         const tokens = jsx2tokens(code, {
           proxy(token, index, tokens) {
             if (
-              ((token.type === TOKEN_TYPES.TEMPLATE || token.type === TOKEN_TYPES.TEMPLATE_HEAD) &&
+              ((token.type === TOKEN_TYPES.TEMPLATE ||
+                token.type === TOKEN_TYPES.TEMPLATE_HEAD) &&
                 tokens[index - 1] &&
                 tokens[index - 1].value === 'css') ||
               ((token.type === TOKEN_TYPES.TEMPLATE_MIDDLE ||
@@ -19,17 +20,22 @@ export default function () {
               if (token.type === TOKEN_TYPES.TEMPLATE_HEAD) insideTemplate.unshift(token.deep)
               else if (token.type === TOKEN_TYPES.TEMPLATE_TAIL) insideTemplate.shift()
 
-              token.value = token.value.replace(
-                /(?<=\:|\;|\{|\}|\,)\s+|\s+(?=\:|\;|\{|\}|\,)|\s*\n\s*|\/\*[^]*?\*\//g,
-                ''
-              )
+              token.value = token.value
+                // .replace(
+                //   /(?<=\:|\;|\{|\}|\,)\s+|\s+(?=\:|\;|\{|\}|\,)|\s*\n\s*|\/\*[^]*?\*\//g,
+                //   ''
+                // )
+                .replace(
+                  /(?<=\:|\;|\{|\,)\s+|\s+(?=\:|\;|\{|\}|\,)|\s*\n\s*|\/\*[^]*?\*\//g,
+                  ''
+                )
             }
-          }
+          },
         })
         code = tokens.map((v) => v.value).join('')
         return { code }
       }
       return null
-    }
+    },
   }
 }

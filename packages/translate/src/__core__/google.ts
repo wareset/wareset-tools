@@ -137,7 +137,7 @@ export const GOOGLE_LANGS = {
   eo: 'эсперанто',
   et: 'эстонский',
   jw: 'яванский',
-  ja: 'японский'
+  ja: 'японский',
 } as const
 
 export const google = (() => {
@@ -145,8 +145,9 @@ export const google = (() => {
   let browser: Browser | null
   let item: any
   let CACHE: any
-  const CACHE_PATH = path.join(os.tmpdir(), 'wareset_tools_google.json')
+  const CACHE_PATH = path.join(os.homedir(), '.wareset_tools_google.cache.json')
   const QUEUE: any[] = []
+  console.log('GT cache: ' + CACHE_PATH)
 
   const timeout = (ms = 100) => new Promise((res) => setTimeout(res, ms))
 
@@ -159,12 +160,14 @@ export const google = (() => {
       const res = JSON.parse(JSON.parse(tt)[0][2])[1]
       const {
         0: {
-          0: { 5: arr }
+          0: { 5: arr },
         },
-        1: to,
-        3: from
+        // 1: to,
+        // 3: from,
+        4: { 0: text, 1: from, 2: to },
       } = res
-      if (item.from !== from || item.to !== to) return
+      if (item.text !== text || item.from !== from || item.to !== to) return
+      // console.log(res)
       const translate = arr.map((v: any) => v[0]).join('')
 
       console.log('GT:', translate, to, from)
@@ -178,7 +181,7 @@ export const google = (() => {
 
       item.res(translate)
       item.res = null
-      await timeout(333)
+      await timeout(item.timeout)
       item = null
       goto()
 
@@ -215,24 +218,29 @@ export const google = (() => {
         const { from, to, text } = item
 
         if (!CACHE) {
+          CACHE = {}
           if (fs.existsSync(CACHE_PATH)) {
-            CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'))
-          } else {
-            CACHE = {}
+            try {
+              CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')) || {}
+            } catch {}
           }
         }
 
         if (CACHE[from] && CACHE[from][to] && CACHE[from][to][text]) {
           item.res(CACHE[from][to][text])
+          item.res = null
           item = null
           goto()
         } else {
           if (!page) {
             page = await (browser = await puppeteer.launch({ headless: false })).newPage()
+            // await page.setUserAgent(customUA);
             page.on('response', response)
           }
           page.goto(
-            `https://translate.google.com/?sl=${from}&tl=${to}&text=${encodeURI(text)}&op=translate`
+            `https://translate.google.com/?sl=${from}&tl=${to}&text=${encodeURI(
+              text
+            )}&op=translate`
           )
         }
       } else {
@@ -241,15 +249,16 @@ export const google = (() => {
     }
   }
 
-  return (text = '', from = 'en', to = 'ru') => {
+  return (text = '', from = 'en', to = 'ru', timeout = 2222): Promise<string> => {
     if (from === 'zh') from = 'zh-CN'
     if (to === 'zh') to = 'zh-CN'
-    if (from === to || !(from in GOOGLE_LANGS) || !(to in GOOGLE_LANGS)) {
+    if (from === to) return Promise.resolve(text)
+    if (!(from in GOOGLE_LANGS) || !(to in GOOGLE_LANGS)) {
       throw new Error(`wareset_tools_google: ${from} -> ${to}: - incorrect lang`)
     }
 
     return new Promise((res) => {
-      QUEUE.push({ res, text, from, to }), goto()
+      QUEUE.push({ res, text, from, to, timeout }), goto()
     })
   }
 })()

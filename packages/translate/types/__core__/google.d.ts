@@ -119,4 +119,4 @@ export declare const GOOGLE_LANGS: {
     readonly jw: "яванский";
     readonly ja: "японский";
 };
-export declare const google: (text?: string, from?: string, to?: string) => Promise<unknown>;
+export declare const google: (text?: string, from?: string, to?: string, timeout?: number) => Promise<string>;

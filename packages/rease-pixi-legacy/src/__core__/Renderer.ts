@@ -13,8 +13,8 @@ import { watch_props, run_oncreate_and_onrender, watch_on_signal } from './utils
 
 import { requestAnimationFrame } from 'tweenity'
 
-function _move(iam: PixiRenderer) {
-  iam.PixiRenderer = iam
+function _move(this: PixiRenderer) {
+  this.PixiRenderer = this
 }
 function _destroy(iam: PixiRenderer) {
   iam.pixi.destroy()
@@ -47,12 +47,12 @@ export class PixiRenderer extends __PixiRease__ {
     this._allowUpdate = true
 
     watch_props(this, $props$)
-    _move(this)
-    this.onMove(_move)
+    _move.call(this)
+    this.onMove(_move, this)
 
     const view_style = pixi.view.style
     view_style.width = view_style.height = '100%'
-    this.insert(h(RElement, { node: pixi.view }, h(PixiContainer, null)))
+    this.insert(h(RElement, { is: pixi.view }, h(PixiContainer, null)))
     this.PixiStage = this.children[0].children[0] as any
 
     this.onDestroy(

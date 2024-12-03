@@ -131,6 +131,14 @@ export default function ({
         )
 
       return {
+        // onwarn(warning, defaultHandler) {
+        //   // console.log('warning', warning)
+        //   defaultHandler(warning)
+        //   if (warning.code === 'MISSING_EXPORT') {
+        //     // throw warning.message
+        //   }
+        // },
+        // shimMissingExports: true,
         external: Object.keys(globals),
         input: path.join(srcDir, input),
         output: {
@@ -157,12 +165,25 @@ export default function ({
               'process.env.NODE_ENV': stringify(production ? 'production' : 'dev'),
             },
           }),
+          rollupPolyfillNode(),
           rollupResolve({
             browser: true,
+            preferBuiltins: false,
             extensions: ['.mjs', '.js', '.jsx', '.mts', '.ts', '.tsx', '.json'],
           }),
-          rollupCommonjs(),
-          rollupPolyfillNode(),
+          rollupCommonjs({ sourceMap: false }),
+
+          {
+            name: 'logs-check',
+            onLog(_level, log) {
+              console.log('LOG:')
+              console.log(log)
+              if (log.code === 'MISSING_EXPORT') {
+                this.error(log)
+              }
+              // console.log(log)
+            },
+          },
 
           {
             name: 'svg-custom',
@@ -214,6 +235,7 @@ export default function ({
           rollupCssinjsMinify(),
           (() => {
             return rollupInject({
+              sourceMap: false,
               REASE: ['rease', '*'],
               css: ['rease', 'css'],
               'React.createElement': ['rease', 'createElement'],
@@ -239,7 +261,12 @@ export default function ({
           // MATH
           //
 
-          Object.keys(injects).length ? rollupInject(injects) : null,
+          Object.keys(injects).length
+            ? rollupInject({
+                sourceMap: false,
+                ...injects,
+              })
+            : null,
 
           ...plugins,
 
@@ -286,6 +313,7 @@ export default function ({
                   return (
                     (
                       await terser(code, {
+                        sourceMap: false,
                         safari10: true,
                         mangle: true,
                         module: true,
