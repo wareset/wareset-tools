@@ -52,7 +52,7 @@ export class PixiRenderer extends __PixiRease__ {
 
     const view_style = pixi.view.style
     view_style.width = view_style.height = '100%'
-    this.insert(h(RElement, { is: pixi.view }, h(PixiContainer, null)))
+    this.insert(h(RElement, { this: pixi.view }, h(PixiContainer, null)))
     this.PixiStage = this.children[0].children[0] as any
 
     this.onDestroy(

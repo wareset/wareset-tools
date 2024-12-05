@@ -176,8 +176,8 @@ export default function ({
           {
             name: 'logs-check',
             onLog(_level, log) {
-              console.log('LOG:')
-              console.log(log)
+              // console.log('LOG:')
+              // console.log(log)
               if (log.code === 'MISSING_EXPORT') {
                 this.error(log)
               }
