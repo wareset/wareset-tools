@@ -1,4 +1,6 @@
-import { init, logError, type ISDK } from './init'
+// https://yandex.ru/dev/games/doc/ru/sdk/sdk-adv
+
+import { getSDK, logError, type ISDK } from './init'
 
 /**
 Полноэкранный блок рекламы
@@ -19,7 +21,7 @@ onOffline — вызывается при потере сетевого соед
 export const advImage = (
   callbacks: Parameters<ISDK['adv']['showFullscreenAdv']>[0]['callbacks'] = {}
 ) =>
-  init()
+  getSDK()
     .then((ysdk) => ysdk.adv.showFullscreenAdv({ callbacks }))
     .catch(logError)
 
@@ -42,6 +44,6 @@ onRewarded — вызывается, когда засчитывается пр�
 export const advVideo = (
   callbacks: Parameters<ISDK['adv']['showRewardedVideo']>[0]['callbacks'] = {}
 ) =>
-  init()
+  getSDK()
     .then((ysdk) => ysdk.adv.showRewardedVideo({ callbacks }))
     .catch(logError)

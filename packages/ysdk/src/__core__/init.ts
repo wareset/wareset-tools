@@ -8,10 +8,10 @@ export const logError = (error: any) => {
   error === void 0 || console.error(error)
 }
 
-let _init: Promise<ISDK>
-export const init = (): Promise<ISDK> =>
-  _init ||
-  (_init =
+let _sdk: Promise<ISDK>
+export const getSDK = (): Promise<ISDK> =>
+  _sdk ||
+  (_sdk =
     // @ts-ignore
     typeof YaGames !== 'undefined'
       ? // @ts-ignore
@@ -26,7 +26,7 @@ export const init = (): Promise<ISDK> =>
 let _authDialog: Promise<boolean> | null
 export const openAuthDialog = (): Promise<boolean> =>
   _authDialog ||
-  (_authDialog = init()
+  (_authDialog = getSDK()
     .then((ysdk) =>
       ysdk.auth
         .openAuthDialog()
@@ -41,7 +41,7 @@ export const openAuthDialog = (): Promise<boolean> =>
 let _getStorage: Promise<typeof localStorage>
 export const getStorage = (): ReturnType<ISDK['getStorage']> =>
   _getStorage ||
-  (_getStorage = init()
+  (_getStorage = getSDK()
     .then((ysdk) => ysdk.getStorage())
     .catch((e) => (logError(e), SDK.getStorage())))
 
@@ -51,7 +51,7 @@ export const getStorage = (): ReturnType<ISDK['getStorage']> =>
 export const getFlags = (
   params?: Parameters<ISDK['getFlags']>[0]
 ): ReturnType<ISDK['getFlags']> =>
-  init()
+  getSDK()
     .then((ysdk) => ysdk.getFlags(params))
     .catch((e) => (logError(e), SDK.getFlags(params)))
 
@@ -72,7 +72,7 @@ export const getPlayer = (
     (_getPlayer ? !_scopes !== !params.scopes && throwPlayer() : (_scopes = !!params.scopes)),
   _getPlayer
     ? _getPlayer
-    : (_getPlayer = init()
+    : (_getPlayer = getSDK()
         .then((ysdk) => ysdk.getPlayer({ scopes: _scopes }))
         .then((player) => (_player = player))
         .catch((e) => (logError(e), _player || SDK.getPlayer())))

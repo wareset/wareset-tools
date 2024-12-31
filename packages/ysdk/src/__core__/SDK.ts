@@ -5,7 +5,7 @@ export const SDK = ((setTimeout, random, Promise) => {
     onClose?: (wasShown: boolean) => any,
     onOpen?: () => any,
     onError?: (error: Error) => any,
-    onOffline?: () => any
+    onOfflineOrRewarded?: () => any
   ) => {
     switch ((random() * 4) | 0) {
       case 0:
@@ -18,7 +18,7 @@ export const SDK = ((setTimeout, random, Promise) => {
         onError && onError(new Error('dev'))
         break
       case 3:
-        onOffline && onOffline()
+        onOfflineOrRewarded && onOfflineOrRewarded()
         break
     }
   }
@@ -107,8 +107,18 @@ export const SDK = ((setTimeout, random, Promise) => {
     },
   }
 
+  let allowRate = true
+  let allowAlias = true
+
   return {
     IS_DEV: true,
+    deviceInfo: {
+      type: 'desktop' as 'desktop' | 'mobile' | 'tablet' | 'tv',
+      isMobile: () => false,
+      isDesktop: () => true,
+      isTablet: () => false,
+      isTV: () => false,
+    },
     environment: {
       app: {
         id: '',
@@ -178,13 +188,17 @@ export const SDK = ((setTimeout, random, Promise) => {
               | 'REVIEW_WAS_REQUESTED'
               | 'UNKNOWN'
           }
-      > => Promise.resolve({ value: false, reason: 'UNKNOWN' }),
-      requestReview: () => Promise.resolve({ feedbackSent: false }),
+      > => Promise.resolve(allowRate ? { value: true } : { value: false, reason: 'UNKNOWN' }),
+      requestReview: () => (
+        (allowRate = false), Promise.resolve({ feedbackSent: random() < 0.5 })
+      ),
     },
 
     shortcut: {
-      canShowPrompt: () => Promise.resolve({ canShow: false }),
-      showPrompt: () => Promise.resolve({ outcome: 'accepted' as 'accepted' | '' }),
+      canShowPrompt: () => Promise.resolve({ canShow: allowAlias }),
+      showPrompt: () => (
+        (allowAlias = false), Promise.resolve({ outcome: random() < 0.5 ? 'accepted' : '' })
+      ),
     },
   }
 })(setTimeout, Math.random, Promise)

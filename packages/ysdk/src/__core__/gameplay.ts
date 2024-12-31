@@ -1,4 +1,6 @@
-import { init, logError } from './init'
+// https://yandex.ru/dev/games/doc/ru/sdk/sdk-game-events#gameplay
+
+import { getSDK, logError } from './init'
 
 let isStarted = false
 
@@ -14,11 +16,13 @@ let isStarted = false
 Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен.
 */
 export const gameStart = () =>
-  init()
-    .then((ysdk) =>
-      isStarted ? false : ((isStarted = true), ysdk.features.GameplayAPI!.start(), true)
-    )
-    .catch(logError)
+  isStarted
+    ? false
+    : ((isStarted = true),
+      getSDK()
+        .then((ysdk) => isStarted && ysdk.features.GameplayAPI!.start())
+        .catch(logError),
+      true)
 
 /**
 Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
@@ -31,8 +35,12 @@ export const gameStart = () =>
 Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
 */
 export const gameStop = () =>
-  init()
-    .then((ysdk) =>
-      isStarted ? ((isStarted = false), ysdk.features.GameplayAPI!.stop(), true) : false
-    )
-    .catch(logError)
+  isStarted
+    ? ((isStarted = false),
+      getSDK()
+        .then((ysdk) => isStarted || ysdk.features.GameplayAPI!.stop())
+        .catch(logError),
+      true)
+    : false
+
+export const gameIsStarted = () => isStarted

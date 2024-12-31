@@ -3,7 +3,7 @@ export { SDK };
 export type ISDK = typeof SDK;
 export type IPlayer = Awaited<ReturnType<ISDK['getPlayer']>>;
 export declare const logError: (error: any) => void;
-export declare const init: () => Promise<ISDK>;
+export declare const getSDK: () => Promise<ISDK>;
 export declare const openAuthDialog: () => Promise<boolean>;
 export declare const getStorage: () => ReturnType<ISDK['getStorage']>;
 export declare const getFlags: (params?: Parameters<ISDK['getFlags']>[0]) => ReturnType<ISDK['getFlags']>;

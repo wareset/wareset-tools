@@ -1,5 +1,12 @@
 export declare const SDK: {
     IS_DEV: boolean;
+    deviceInfo: {
+        type: "desktop" | "mobile" | "tablet" | "tv";
+        isMobile: () => boolean;
+        isDesktop: () => boolean;
+        isTablet: () => boolean;
+        isTV: () => boolean;
+    };
     environment: {
         app: {
             id: string;
@@ -144,7 +151,7 @@ export declare const SDK: {
             canShow: boolean;
         }>;
         showPrompt: () => Promise<{
-            outcome: "" | "accepted";
+            outcome: string;
         }>;
     };
 };

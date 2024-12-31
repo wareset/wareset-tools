@@ -141,13 +141,18 @@ export const GOOGLE_LANGS = {
 } as const
 
 export const google = (() => {
+  // this need for debugging
+  const __CACHE_IS_ENABLED__ = true
+
   let page: Page | null
   let browser: Browser | null
   let item: any
   let CACHE: any
-  const CACHE_PATH = path.join(os.homedir(), '.wareset_tools_google.cache.json')
+  const CACHE_PATH = __CACHE_IS_ENABLED__
+    ? path.join(os.homedir(), '.wareset_tools_google.cache.json')
+    : null
   const QUEUE: any[] = []
-  console.log('GT cache: ' + CACHE_PATH)
+  console.log('GT cache: ' + (CACHE_PATH || 'DISABLED'))
 
   const timeout = (ms = 100) => new Promise((res) => setTimeout(res, ms))
 
@@ -158,25 +163,35 @@ export const google = (() => {
 
       const tt = data.split('\n')[3]
       const res = JSON.parse(JSON.parse(tt)[0][2])[1]
-      const {
+      let {
         0: {
-          0: { 5: arr },
+          0: { 0: arrItem, 5: arr },
         },
         // 1: to,
         // 3: from,
         4: { 0: text, 1: from, 2: to },
       } = res
+
+      // console.log(1, text, from, to, arr)
       if (item.text !== text || item.from !== from || item.to !== to) return
+      if (!arr) {
+        if (typeof arrItem === 'string') {
+          console.log(`GT warning: ${from} -> ${to}. ${text} -> ${arrItem}`)
+          arr = [[arrItem]]
+        } else return
+      }
+      // console.log(2, res)
+
       // console.log(res)
       const translate = arr.map((v: any) => v[0]).join('')
 
-      console.log('GT:', translate, to, from)
+      console.log('GT:', from + ' -> ' + to, translate)
 
       if (CACHE) {
         if (!CACHE[item.from]) CACHE[item.from] = {}
         if (!CACHE[item.from][item.to]) CACHE[item.from][item.to] = {}
         CACHE[item.from][item.to][item.text] = translate
-        fs.writeFileSync(CACHE_PATH, JSON.stringify(CACHE, null, 2))
+        if (CACHE_PATH) fs.writeFileSync(CACHE_PATH, JSON.stringify(CACHE, null, 2))
       }
 
       item.res(translate)
@@ -219,7 +234,7 @@ export const google = (() => {
 
         if (!CACHE) {
           CACHE = {}
-          if (fs.existsSync(CACHE_PATH)) {
+          if (CACHE_PATH && fs.existsSync(CACHE_PATH)) {
             try {
               CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')) || {}
             } catch {}

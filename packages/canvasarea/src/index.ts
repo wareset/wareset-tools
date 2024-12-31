@@ -21,8 +21,6 @@ class _CanvasareaRenderingContext2D_ {
   }
   // transform next
   private _tn: _CanvasareaRenderingContext2D_['_tl']
-  // need update
-  private _nu: boolean
 
   private _gsx: number
   private _gsy: number
@@ -34,7 +32,6 @@ class _CanvasareaRenderingContext2D_ {
     this._ctx = null as any
     this._tl = {} as any
     this._tn = {} as any
-    this._nu = false
 
     this._gsx = 1
     this._gsy = 1
@@ -48,17 +45,17 @@ class _CanvasareaRenderingContext2D_ {
 
       defineProperty(proto, 'GLOBAL_SCALE_X', {
         get: function () {
-          return this._transform(), this._gsx
+          return this._gsx
         },
       })
       defineProperty(proto, 'GLOBAL_SCALE_Y', {
         get: function () {
-          return this._transform(), this._gsy
+          return this._gsy
         },
       })
       defineProperty(proto, 'GLOBAL_SCALE_MEAN', {
         get: function () {
-          return this._transform(), (this._gsx + this._gsy) / 2
+          return (this._gsx + this._gsy) / 2
         },
       })
 
@@ -88,7 +85,7 @@ class _CanvasareaRenderingContext2D_ {
                   // enumerable,
                   // writable,
                   value: function () {
-                    return this._transform(), value.apply(this._ctx, arguments)
+                    return value.apply(this._ctx, arguments)
                   },
                 }
           )
@@ -102,7 +99,6 @@ class _CanvasareaRenderingContext2D_ {
 
     this._ctx.save()
     canvasarea._draw(this as any)
-    this._transform()
     const gsx = this._gsx
     const gsy = this._gsy
     canvasarea._areas.forEach(areasForEach, { gsx, gsy, iam: this })
@@ -110,52 +106,49 @@ class _CanvasareaRenderingContext2D_ {
     this._ctx.restore()
   }
 
-  protected _transform() {
-    if (this._nu) {
-      const ctx = this._ctx
-      const tl = this._tl
-      const tn = this._tn
-      this._nu = false
+  protected _areaUpdate() {
+    const ctx = this._ctx
+    const tl = this._tl
+    const tn = this._tn
 
-      if (tl.px || tl.py) ctx.translate(tl.px, tl.py)
-      if (tl.ra) ctx.rotate(-tl.ra)
-      if (tl.sx !== 1 || tl.sy !== 1) ctx.scale(1 / tl.sx, 1 / tl.sy)
-      if (tl.tx || tl.ty) ctx.translate(-tl.tx, -tl.ty)
+    if (tl.px || tl.py) ctx.translate(tl.px, tl.py)
+    if (tl.ra) ctx.rotate(-tl.ra)
+    if (tl.sx !== 1 || tl.sy !== 1) ctx.scale(1 / tl.sx, 1 / tl.sy)
+    if (tl.tx || tl.ty) ctx.translate(-tl.tx, -tl.ty)
 
-      this._gsx /= tl.sx
-      this._gsy /= tl.sy
+    this._gsx /= tl.sx
+    this._gsy /= tl.sy
 
-      // @ts-ignore
-      for (const k in tn) tl[k] = tn[k]
+    // @ts-ignore
+    for (const k in tn) tl[k] = tn[k]
 
-      this._gsx *= tl.sx
-      this._gsy *= tl.sy
+    this._gsx *= tl.sx
+    this._gsy *= tl.sy
 
-      if (tl.tx || tl.ty) ctx.translate(tl.tx, tl.ty)
-      if (tl.sx !== 1 || tl.sy !== 1) ctx.scale(tl.sx, tl.sy)
-      if (tl.ra) ctx.rotate(tl.ra)
-      if (tl.px || tl.py) ctx.translate(-tl.px, -tl.py)
-    }
+    if (tl.tx || tl.ty) ctx.translate(tl.tx, tl.ty)
+    if (tl.sx !== 1 || tl.sy !== 1) ctx.scale(tl.sx, tl.sy)
+    if (tl.ra) ctx.rotate(tl.ra)
+    if (tl.px || tl.py) ctx.translate(-tl.px, -tl.py)
   }
 
   areaShift(x = 0, y = 0) {
     const tn = this._tn
-    if (tn.tx !== x || tn.ty !== y) (tn.tx = x), (tn.ty = y), (this._nu = true)
+    if (tn.tx !== x || tn.ty !== y) (tn.tx = x), (tn.ty = y), this._areaUpdate()
   }
   areaScale(x = 1, y = x) {
     const tn = this._tn
-    if (tn.sx !== x || tn.sy !== y) (tn.sx = x), (tn.sy = y), (this._nu = true)
+    if (tn.sx !== x || tn.sy !== y) (tn.sx = x), (tn.sy = y), this._areaUpdate()
   }
   areaAngle(deg = 0) {
     this.areaRadii((deg * Math.PI) / 180)
   }
   areaRadii(rad = 0) {
     const tn = this._tn
-    if (tn.ra !== rad) (tn.ra = rad), (this._nu = true)
+    if (tn.ra !== rad) (tn.ra = rad), this._areaUpdate()
   }
   areaPivot(x = 0, y = 0) {
     const tn = this._tn
-    if (tn.px !== x || tn.py !== y) (tn.px = x), (tn.py = y), (this._nu = true)
+    if (tn.px !== x || tn.py !== y) (tn.px = x), (tn.py = y), this._areaUpdate()
   }
 }
 

@@ -1,5 +1,3 @@
-import { init, logError } from './init'
-
 /**
 Чтобы узнать, можно ли запросить оценку игры, используйте метод ysdk.feedback.canReview().
 
@@ -15,11 +13,12 @@ REVIEW_ALREADY_REQUESTED — запрос уже отправлен, ожида�
 REVIEW_WAS_REQUESTED — запрос уже отправлен, пользователь совершил действие: поставил оценку или закрыл всплывающее окно.
 UNKNOWN — запрос не был отправлен, ошибка на стороне Яндекса.
 */
-export const reviewCan = () =>
-  init()
-    .then((ysdk) => ysdk.feedback.canReview())
-    .catch(logError)
-
+export declare const rateCheck: () => Promise<void | {
+    value: true;
+} | {
+    value: false;
+    reason: "NO_AUTH" | "GAME_RATED" | "REVIEW_ALREADY_REQUESTED" | "REVIEW_WAS_REQUESTED" | "UNKNOWN";
+}>;
 /**
 Чтобы предложить пользователю оценить игру, используйте метод ysdk.feedback.requestReview().
 
@@ -27,8 +26,4 @@ export const reviewCan = () =>
 
 Если перед выполнением запроса вы проигнорировали метод ysdk.feedback.canReview(), значение feedbackSent: false может сопровождаться ошибкой use canReview before requestReview.
 */
-export const reviewRun = () =>
-  init()
-    .then((ysdk) => ysdk.feedback.requestReview())
-    .then((result) => result.feedbackSent)
-    .catch(logError)
+export declare const rateOpen: () => Promise<boolean | void>;

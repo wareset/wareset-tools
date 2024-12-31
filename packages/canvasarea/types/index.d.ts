@@ -2,7 +2,6 @@ declare class _CanvasareaRenderingContext2D_ {
     private _ctx;
     private _tl;
     private _tn;
-    private _nu;
     private _gsx;
     private _gsy;
     readonly GLOBAL_SCALE_X: number;
@@ -10,7 +9,7 @@ declare class _CanvasareaRenderingContext2D_ {
     readonly GLOBAL_SCALE_MEAN: number;
     constructor();
     protected _render(canvasarea: Canvasarea): void;
-    protected _transform(): void;
+    protected _areaUpdate(): void;
     areaShift(x?: number, y?: number): void;
     areaScale(x?: number, y?: number): void;
     areaAngle(deg?: number): void;

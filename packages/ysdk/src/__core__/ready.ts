@@ -1,4 +1,4 @@
-import { init, logError } from './init'
+import { getSDK, logError } from './init'
 
 let isReady = false
 
@@ -10,7 +10,11 @@ let isReady = false
 все элементы готовы к взаимодействию с игроком;
 нет экранов загрузки.
 */
-export const ready = () =>
-  init()
-    .then((ysdk) => isReady || ((isReady = true), ysdk.features.LoadingAPI!.ready(), isReady))
-    .catch(logError)
+export const ready = () => (
+  isReady ||
+    ((isReady = true),
+    getSDK()
+      .then((ysdk) => ysdk.features.LoadingAPI!.ready())
+      .catch(logError)),
+  void 0
+)

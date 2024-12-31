@@ -38,13 +38,18 @@ export const DEEPL_LANGS = {
 } as const
 
 export const deepl = (() => {
+  // this need for debugging
+  const __CACHE_IS_ENABLED__ = true
+
   let page: Page | null
   let browser: Browser | null
   let item: any
   let CACHE: any
-  const CACHE_PATH = path.join(os.homedir(), '.wareset_tools_deepl.cache.json')
+  const CACHE_PATH = __CACHE_IS_ENABLED__
+    ? path.join(os.homedir(), '.wareset_tools_deepl.cache.json')
+    : null
   const QUEUE: any[] = []
-  console.log('DT cache: ' + CACHE_PATH)
+  console.log('DT cache: ' + (CACHE_PATH || 'DISABLED'))
 
   const timeout = (ms = 100) => new Promise((res) => setTimeout(res, ms))
 
@@ -85,7 +90,7 @@ export const deepl = (() => {
         if (!CACHE[item.from]) CACHE[item.from] = {}
         if (!CACHE[item.from][item.to]) CACHE[item.from][item.to] = {}
         CACHE[item.from][item.to][item.text] = res
-        fs.writeFileSync(CACHE_PATH, JSON.stringify(CACHE, null, 2))
+        if (CACHE_PATH) fs.writeFileSync(CACHE_PATH, JSON.stringify(CACHE, null, 2))
       }
 
       item.res(res)
@@ -106,7 +111,7 @@ export const deepl = (() => {
 
         if (!CACHE) {
           CACHE = {}
-          if (fs.existsSync(CACHE_PATH)) {
+          if (CACHE_PATH && fs.existsSync(CACHE_PATH)) {
             try {
               CACHE = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8')) || {}
             } catch {}
