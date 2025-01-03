@@ -11,10 +11,27 @@ declare class _CanvasareaRenderingContext2D_ {
     protected _render(canvasarea: Canvasarea): void;
     protected _areaUpdate(): void;
     areaShift(x?: number, y?: number): void;
+    areaShiftX(x?: number): void;
+    areaShiftY(y?: number): void;
+    areaShiftAdd(x?: number, y?: number): void;
+    areaShiftXAdd(x?: number): void;
+    areaShiftYAdd(y?: number): void;
     areaScale(x?: number, y?: number): void;
-    areaAngle(deg?: number): void;
+    areaScaleX(x?: number): void;
+    areaScaleY(y?: number): void;
+    areaScaleAdd(x?: number, y?: number): void;
+    areaScaleXAdd(x?: number): void;
+    areaScaleYAdd(y?: number): void;
     areaRadii(rad?: number): void;
+    areaRadiiAdd(rad?: number): void;
+    areaAngle(deg?: number): void;
+    areaAngleAdd(deg?: number): void;
     areaPivot(x?: number, y?: number): void;
+    areaPivotX(x?: number): void;
+    areaPivotY(y?: number): void;
+    areaPivotAdd(x?: number, y?: number): void;
+    areaPivotXAdd(x?: number): void;
+    areaPivotYAdd(y?: number): void;
 }
 export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ & CanvasRenderingContext2D;
 export declare class Canvasarea {

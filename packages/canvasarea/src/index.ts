@@ -135,20 +135,91 @@ class _CanvasareaRenderingContext2D_ {
     const tn = this._tn
     if (tn.tx !== x || tn.ty !== y) (tn.tx = x), (tn.ty = y), this._areaUpdate()
   }
+  areaShiftX(x = 0) {
+    const tn = this._tn
+    this.areaShift(x, tn.ty)
+  }
+  areaShiftY(y = 0) {
+    const tn = this._tn
+    this.areaShift(tn.tx, y)
+  }
+  areaShiftAdd(x = 0, y = 0) {
+    const tn = this._tn
+    this.areaShift(tn.tx + x, tn.ty + y)
+  }
+  areaShiftXAdd(x = 0) {
+    const tn = this._tn
+    this.areaShift(tn.tx + x, tn.ty)
+  }
+  areaShiftYAdd(y = 0) {
+    const tn = this._tn
+    this.areaShift(tn.tx, tn.ty + y)
+  }
+
   areaScale(x = 1, y = x) {
     const tn = this._tn
     if (tn.sx !== x || tn.sy !== y) (tn.sx = x), (tn.sy = y), this._areaUpdate()
   }
-  areaAngle(deg = 0) {
-    this.areaRadii((deg * Math.PI) / 180)
+  areaScaleX(x = 1) {
+    const tn = this._tn
+    this.areaScale(x, tn.sy)
   }
+  areaScaleY(y = 1) {
+    const tn = this._tn
+    this.areaScale(tn.sx, y)
+  }
+  areaScaleAdd(x = 0, y = x) {
+    const tn = this._tn
+    this.areaScale(tn.sx + x, tn.sy + y)
+  }
+  areaScaleXAdd(x = 0) {
+    const tn = this._tn
+    this.areaScale(tn.sx + x, tn.sy)
+  }
+  areaScaleYAdd(y = 0) {
+    const tn = this._tn
+    this.areaScale(tn.sx, tn.sy + y)
+  }
+
   areaRadii(rad = 0) {
     const tn = this._tn
     if (tn.ra !== rad) (tn.ra = rad), this._areaUpdate()
   }
+  areaRadiiAdd(rad = 0) {
+    const tn = this._tn
+    this.areaRadii(tn.ra + rad)
+  }
+  areaAngle(deg = 0) {
+    this.areaRadii((deg * Math.PI) / 180)
+  }
+  areaAngleAdd(deg = 0) {
+    const tn = this._tn
+    this.areaRadii(tn.ra + (deg * Math.PI) / 180)
+  }
+
   areaPivot(x = 0, y = 0) {
     const tn = this._tn
     if (tn.px !== x || tn.py !== y) (tn.px = x), (tn.py = y), this._areaUpdate()
+  }
+  areaPivotX(x = 0) {
+    const tn = this._tn
+    this.areaPivot(x, tn.py)
+  }
+  areaPivotY(y = 0) {
+    const tn = this._tn
+    this.areaPivot(tn.px, y)
+  }
+  areaPivotAdd(x = 0, y = 0) {
+    const tn = this._tn
+    this.areaPivot(tn.px + x, tn.py + y)
+  }
+  areaPivotXAdd(x = 0) {
+    const tn = this._tn
+    this.areaPivot(tn.px + x, tn.py)
+  }
+  areaPivotYAdd(y = 0) {
+    const tn = this._tn
+    this.areaPivot(tn.px, tn.py + y)
   }
 }
 
