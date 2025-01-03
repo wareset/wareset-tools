@@ -44,11 +44,11 @@
   },
   "devDependencies": {
     "dester": "1.0.x",
-    "typescript": "^5.2.2"
+    "typescript": "5.7.2"
   },
   "dependencies": {
-    "pixi.js-legacy": "7.4.2",
+    "@pixi/graphics-extras-legacy": "npm:@pixi/graphics-extras@7.4.2",
     "@pixi/sound-legacy": "npm:@pixi/sound@5.2.3",
-    "@pixi/graphics-extras-legacy": "npm:@pixi/graphics-extras@7.4.2"
+    "pixi.js-legacy": "7.4.2"
   }
 }

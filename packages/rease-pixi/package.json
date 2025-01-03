@@ -43,10 +43,10 @@
   },
   "devDependencies": {
     "dester": "1.0.x",
-    "typescript": "^5.2.2"
+    "typescript": "5.7.2"
   },
   "dependencies": {
-    "pixi.js": "8.5.0",
-    "@pixi/sound": "6.0.1"
+    "@pixi/sound": "6.0.1",
+    "pixi.js": "8.5.0"
   }
 }

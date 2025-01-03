@@ -36,9 +36,9 @@
   },
   "devDependencies": {
     "dester": "1.0.x",
-    "svgo": "^3.3.2",
     "nodemon": "^3.1.1",
-    "typescript": "^5.2.2"
+    "svgo": "^3.3.2",
+    "typescript": "5.7.2"
   },
   "dependencies": {
     "@wareset-tools/canvasarea": "1.0.x"
