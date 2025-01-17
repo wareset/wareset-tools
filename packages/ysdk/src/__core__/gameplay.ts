@@ -1,9 +1,15 @@
 // https://yandex.ru/dev/games/doc/ru/sdk/sdk-game-events#gameplay
 
-import { getSDK, logError } from './init'
+import { getSDK, log, logError } from './init'
 
 let isStarted = false
+let isPaused = false
 
+export const gameIsStarted = () => isStarted
+export const gameIsPaused = () => isStarted && isPaused
+
+let _started = false
+let _need_start = true
 /**
 Метод ysdk.features.GameplayAPI.start() нужно вызывать в случаях, когда игрок начинает или возобновляет игровой процесс:
 
@@ -15,15 +21,18 @@ let isStarted = false
 
 Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен.
 */
-export const gameStart = () =>
-  isStarted
-    ? false
-    : ((isStarted = true),
-      getSDK()
-        .then((ysdk) => isStarted && ysdk.features.GameplayAPI!.start())
-        .catch(logError),
-      true)
-
+const _start = (logs: string) => {
+  log(logs)
+  _need_start = true
+  getSDK()
+    .then(
+      (ysdk) =>
+        _need_start &&
+        (_started ||
+          ((_started = true), log('gameplayStart'), ysdk.features.GameplayAPI!.start()))
+    )
+    .catch(logError)
+}
 /**
 Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
 
@@ -34,13 +43,27 @@ export const gameStart = () =>
 уход в другую вкладку браузера.
 Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
 */
-export const gameStop = () =>
-  isStarted
-    ? ((isStarted = false),
-      getSDK()
-        .then((ysdk) => isStarted || ysdk.features.GameplayAPI!.stop())
-        .catch(logError),
-      true)
-    : false
+const _stop = (logs: string) => {
+  log(logs)
+  _need_start = false
+  getSDK()
+    .then(
+      (ysdk) =>
+        _need_start ||
+        (_started &&
+          ((_started = false), log('gameplayStop'), ysdk.features.GameplayAPI!.stop()))
+    )
+    .catch(logError)
+}
 
-export const gameIsStarted = () => isStarted
+export const gameStart = () =>
+  !isStarted ? (_start('gameStart'), (isStarted = !(isPaused = false))) : false
+
+export const gameStop = () =>
+  isStarted ? (_stop('gameStop'), !(isPaused = isStarted = false)) : false
+
+export const gameResume = () =>
+  isStarted && isPaused ? (_start('gameResume'), !(isPaused = false)) : false
+
+export const gamePause = () =>
+  isStarted && !isPaused ? (_stop('gamePause'), (isPaused = true)) : false

@@ -1,6 +1,6 @@
 // https://yandex.ru/dev/games/doc/ru/sdk/sdk-shortcut
 
-import { getSDK, logError } from './init'
+import { getSDK, log, logError } from './init'
 
 /**
 Проверка возможности добавления ярлыка
@@ -8,7 +8,7 @@ import { getSDK, logError } from './init'
 */
 export const shortcutCheck = () =>
   getSDK()
-    .then((ysdk) => ysdk.shortcut.canShowPrompt())
+    .then((ysdk) => (log('shortcutCheck'), ysdk.shortcut.canShowPrompt()))
     .then((prompt) => !!prompt.canShow)
     .catch(logError)
 
@@ -18,6 +18,6 @@ export const shortcutCheck = () =>
 */
 export const shortcutOpen = () =>
   getSDK()
-    .then((ysdk) => ysdk.shortcut.showPrompt())
+    .then((ysdk) => (log('shortcutOpen'), ysdk.shortcut.showPrompt()))
     .then((result) => result.outcome === 'accepted')
     .catch(logError)

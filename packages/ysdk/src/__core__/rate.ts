@@ -1,6 +1,6 @@
 // https://yandex.ru/dev/games/doc/ru/sdk/sdk-review
 
-import { getSDK, logError } from './init'
+import { getSDK, log, logError } from './init'
 
 /**
 Чтобы узнать, можно ли запросить оценку игры, используйте метод ysdk.feedback.canReview().
@@ -19,7 +19,7 @@ UNKNOWN — запрос не был отправлен, ошибка на ст�
 */
 export const rateCheck = () =>
   getSDK()
-    .then((ysdk) => ysdk.feedback.canReview())
+    .then((ysdk) => (log('rateCheck'), ysdk.feedback.canReview()))
     .catch(logError)
 
 /**
@@ -31,6 +31,6 @@ export const rateCheck = () =>
 */
 export const rateOpen = () =>
   getSDK()
-    .then((ysdk) => ysdk.feedback.requestReview())
+    .then((ysdk) => (log('rateOpen'), ysdk.feedback.requestReview()))
     .then((result) => result.feedbackSent)
     .catch(logError)

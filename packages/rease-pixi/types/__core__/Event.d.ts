@@ -7,7 +7,7 @@ declare class PixiEvent<CTX = any> extends Rease {
         $mode$?: IMaybeSubscribable<EventMode>;
         $once$?: IMaybeSubscribable<boolean>;
         $type$: IMaybeSubscribable<string | string[]>;
-        $handler$: IMaybeSubscribable<(this: CTX, ...a: any) => any | null>;
+        $handler$: IMaybeSubscribable<((this: CTX, ...a: any) => any) | null>;
         $context$?: CTX;
     });
     _mode?: EventMode;

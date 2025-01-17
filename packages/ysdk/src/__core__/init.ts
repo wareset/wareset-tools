@@ -4,8 +4,11 @@ export { SDK }
 export type ISDK = typeof SDK
 export type IPlayer = Awaited<ReturnType<ISDK['getPlayer']>>
 
+export const log = (message: string) => {
+  console.log('YSDK: ' + message)
+}
 export const logError = (error: any) => {
-  error === void 0 || console.error(error)
+  log('error'), error === void 0 || console.error(error)
 }
 
 let _sdk: Promise<ISDK>

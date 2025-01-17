@@ -1,4 +1,6 @@
-import { getSDK, logError } from './init'
+// https://yandex.ru/dev/games/doc/ru/sdk/sdk-game-events#gameready
+
+import { getSDK, log, logError } from './init'
 
 let isReady = false
 
@@ -10,11 +12,10 @@ let isReady = false
 все элементы готовы к взаимодействию с игроком;
 нет экранов загрузки.
 */
-export const ready = () => (
+export const ready = () => {
   isReady ||
     ((isReady = true),
     getSDK()
-      .then((ysdk) => ysdk.features.LoadingAPI!.ready())
-      .catch(logError)),
-  void 0
-)
+      .then((ysdk) => (log('ready'), ysdk.features.LoadingAPI!.ready()))
+      .catch(logError))
+}

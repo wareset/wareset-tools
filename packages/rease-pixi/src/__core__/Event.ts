@@ -34,7 +34,7 @@ function _watchMode(this: PixiEvent, mode?: EventMode) {
 }
 function _watch(
   this: PixiEvent,
-  [types, handler, once, ctx]: [string | string[], (...a: any) => any, boolean?, any?]
+  [types, handler, once, ctx]: [string | string[], any, boolean?, any?]
 ) {
   _off(this)
   this._once = once
@@ -56,7 +56,7 @@ class PixiEvent<CTX = any> extends Rease {
     $mode$?: IMaybeSubscribable<EventMode>
     $once$?: IMaybeSubscribable<boolean>
     $type$: IMaybeSubscribable<string | string[]>
-    $handler$: IMaybeSubscribable<(this: CTX, ...a: any) => any | null>
+    $handler$: IMaybeSubscribable<((this: CTX, ...a: any) => any) | null>
     $context$?: CTX
   }) {
     super()

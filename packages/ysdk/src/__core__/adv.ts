@@ -1,6 +1,6 @@
 // https://yandex.ru/dev/games/doc/ru/sdk/sdk-adv
 
-import { getSDK, logError, type ISDK } from './init'
+import { getSDK, log, logError, type ISDK } from './init'
 
 /**
 Полноэкранный блок рекламы
@@ -22,7 +22,7 @@ export const advImage = (
   callbacks: Parameters<ISDK['adv']['showFullscreenAdv']>[0]['callbacks'] = {}
 ) =>
   getSDK()
-    .then((ysdk) => ysdk.adv.showFullscreenAdv({ callbacks }))
+    .then((ysdk) => (log('advImage'), ysdk.adv.showFullscreenAdv({ callbacks })))
     .catch(logError)
 
 /**
@@ -45,5 +45,5 @@ export const advVideo = (
   callbacks: Parameters<ISDK['adv']['showRewardedVideo']>[0]['callbacks'] = {}
 ) =>
   getSDK()
-    .then((ysdk) => ysdk.adv.showRewardedVideo({ callbacks }))
+    .then((ysdk) => (log('advVideo'), ysdk.adv.showRewardedVideo({ callbacks })))
     .catch(logError)
