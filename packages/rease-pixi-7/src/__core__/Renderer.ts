@@ -15,6 +15,7 @@ class PixiRenderer extends Rease {
     }
   ) {
     super()
+    const iam = this
     const pixi = (this.pixi = PIXI.autoDetectRenderer(props.options))
 
     const canvas = pixi.view
@@ -25,36 +26,43 @@ class PixiRenderer extends Rease {
     let updateAllow = false
     const render = (t: number) => {
       updateAllow = true
-      if (this.PixiScene) {
+      if (iam.PixiScene) {
         if (needResize) {
           needResize = false
           pixi.resize(canvas.clientWidth, canvas.clientHeight)
-          this.emitDeep('pixi-resize')
+          iam.emitDeep('pixi-resize')
         }
-        this.emitDeep('pixi-render', t)
-        pixi.render(this.PixiScene.pixi)
+        iam.emitDeep('pixi-render', t)
+        pixi.render(iam.PixiScene.pixi)
       }
     }
+
+    const reaseCanvas = iam.insert(createElement(RElement, { this: canvas }))[0]
+
     this.update = () => {
       updateAllow && ((updateAllow = false), requestAnimationFrame(render))
     }
 
-    const reaseCanvas = this.insert(createElement(RElement, { this: canvas }))[0]
-
-    this.onDestroy(
+    iam.onDestroy(
       listen(canvas, 'resize', () => {
         needResize = true
-        this.update()
+        iam.update()
       })
     )
 
-    parse_props_before_insert(this, props)
+    parse_props_before_insert(iam, props)
     reaseCanvas.insert(props.children)
-    parse_props_after_insert(this, props)
+    parse_props_after_insert(iam, props)
+    iam.onDestroy(iam.hookDestroy)
     updateAllow = true
-    this.update()
+    iam.update()
   }
 
   update: () => void
+
+  protected hookDestroy(iam: this) {
+    iam.update = () => {}
+    iam.pixi.destroy()
+  }
 }
 export { PixiRenderer as Renderer }

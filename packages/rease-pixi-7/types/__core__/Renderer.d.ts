@@ -8,5 +8,6 @@ declare class PixiRenderer extends Rease {
         options?: Partial<PIXI.IRendererOptionsAuto>;
     });
     update: () => void;
+    protected hookDestroy(iam: this): void;
 }
 export { PixiRenderer as Renderer };

@@ -1,17 +1,8 @@
 import { Rease } from 'rease'
 
-import type {
-  Assets,
-  AssetInitOptions,
-  UnresolvedAsset,
-  ProgressCallback,
-  Texture,
-  AssetsBundle,
-} from 'pixi-7'
-
 function _destroy(this: any) {
   const props = this
-  props.assets[/Bundle$/.test(props.method) ? 'unloadBundle' : 'unload'](
+  ;(props.assets || PIXI.Assets)[/Bundle$/.test(props.method) ? 'unloadBundle' : 'unload'](
     props.url || props.urls || props.bundleId || props.bundleIds
   )
 }
@@ -27,103 +18,107 @@ function _await(this: { iam: PixiAssets; props: any }, v: any) {
 class PixiAssets extends Rease {
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'init'
-      options?: AssetInitOptions
+      options?: PIXI.AssetInitOptions
     } & ({ children?: any } | { callback?: (this: PixiAssets) => any })
   )
-  constructor(props: { pixi?: typeof Assets; method: 'add'; assets: AssetsBundle['assets'] })
   constructor(props: {
-    pixi?: typeof Assets
+    assets: typeof PIXI.Assets
+    method: 'add'
+    data: PIXI.UnresolvedAsset | PIXI.UnresolvedAsset[]
+  })
+  constructor(props: {
+    assets: typeof PIXI.Assets
     method: 'addBundle'
     bundleId: string
-    assets: AssetsBundle['assets']
+    data: PIXI.AssetsBundle['assets']
   })
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'load'
-      url: string | UnresolvedAsset
-      onProgress?: ProgressCallback
-      unload?: Boolean
-    } & ({ children?: any } | { callback?: (this: PixiAssets, texture: Texture) => any })
+      url: string | PIXI.UnresolvedAsset
+      onProgress?: PIXI.ProgressCallback
+      unload?: boolean
+    } & ({ children?: any } | { callback?: (this: PixiAssets, texture: PIXI.Texture) => any })
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'load'
-      urls: string[] | UnresolvedAsset[]
-      onProgress?: ProgressCallback
-      unload?: Boolean
+      urls: string[] | PIXI.UnresolvedAsset[]
+      onProgress?: PIXI.ProgressCallback
+      unload?: boolean
     } & (
       | { children?: any }
-      | { callback?: (this: PixiAssets, textures: Record<string, Texture>) => any }
+      | { callback?: (this: PixiAssets, textures: Record<string, PIXI.Texture>) => any }
     )
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'loadBundle'
       bundleId: string
-      onProgress?: ProgressCallback
-      unload?: Boolean
-    } & ({ children?: any } | { callback?: (this: PixiAssets, texture: Texture) => any })
+      onProgress?: PIXI.ProgressCallback
+      unload?: boolean
+    } & ({ children?: any } | { callback?: (this: PixiAssets, texture: PIXI.Texture) => any })
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'loadBundle'
       bundleIds: string[]
-      onProgress?: ProgressCallback
-      unload?: Boolean
+      onProgress?: PIXI.ProgressCallback
+      unload?: boolean
     } & (
       | { children?: any }
-      | { callback?: (this: PixiAssets, textures: Record<string, Texture>) => any }
+      | { callback?: (this: PixiAssets, textures: Record<string, PIXI.Texture>) => any }
     )
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'backgroundLoad'
       url: string
-      unload?: Boolean
+      unload?: boolean
     } & ({ children?: any } | { callback?: (this: PixiAssets) => any })
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'backgroundLoad'
       urls: string[]
-      unload?: Boolean
+      unload?: boolean
     } & ({ children?: any } | { callback?: (this: PixiAssets) => any })
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'backgroundLoadBundle'
       bundleId: string
-      unload?: Boolean
+      unload?: boolean
     } & ({ children?: any } | { callback?: (this: PixiAssets) => any })
   )
   constructor(
     props: {
-      pixi?: typeof Assets
+      assets?: typeof PIXI.Assets
       method: 'backgroundLoadBundle'
       bundleIds: string[]
-      unload?: Boolean
+      unload?: boolean
     } & ({ children?: any } | { callback?: (this: PixiAssets) => any })
   )
   constructor(props: any) {
     super()
     this.await(
-      (props.pixi || (PIXI.Assets as any))[props.method](
+      (props.assets || PIXI.Assets)[props.method](
         props.options ||
           props.url ||
           props.urls ||
           props.bundleId ||
           props.bundleIds ||
-          props.assets,
-        props.onProgress || props.assets
+          props.data,
+        props.onProgress || props.data
       ),
       _await,
       { iam: this, props }

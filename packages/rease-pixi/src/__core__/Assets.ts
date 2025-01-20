@@ -11,7 +11,7 @@ import type {
 
 function _destroy(this: any) {
   const props = this
-  props.assets[/Bundle$/.test(props.method) ? 'unloadBundle' : 'unload'](
+  props.pixi[/Bundle$/.test(props.method) ? 'unloadBundle' : 'unload'](
     props.url || props.urls || props.bundleId || props.bundleIds
   )
 }
