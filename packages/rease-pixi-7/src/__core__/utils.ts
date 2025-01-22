@@ -2,6 +2,8 @@ import { Rease } from 'rease'
 
 import { IProps } from './types'
 
+import { EMIT_NAME_RESIZE, EMIT_NAME_RENDER } from './const'
+
 export function is_equal(a: any, b: any) {
   return a === a ? a === b : b !== b
 }
@@ -47,8 +49,8 @@ export function parse_props_before_insert(
 
   if (onCreateCapture) onCreateCapture.call(rease, rease.pixi)
 
-  if (onResizeCapture) rease.on('pixi-resize', onResizeCapture, rease, true)
-  if (onRenderCapture) rease.on('pixi-render', onRenderCapture, rease, true)
+  if (onResizeCapture) rease.on(EMIT_NAME_RESIZE, onResizeCapture, rease, true)
+  if (onRenderCapture) rease.on(EMIT_NAME_RENDER, onRenderCapture, rease, true)
 
   if ($signalCapture$) rease.watch($signalCapture$, watch_onDraw, rease)
 }
@@ -59,8 +61,8 @@ export function parse_props_after_insert(
 ) {
   if (onCreate) onCreate.call(rease, rease.pixi)
 
-  if (onResize) rease.on('pixi-resize', onResize, rease)
-  if (onRender) rease.on('pixi-render', onRender, rease)
+  if (onResize) rease.on(EMIT_NAME_RESIZE, onResize, rease)
+  if (onRender) rease.on(EMIT_NAME_RENDER, onRender, rease)
 
   if ($signal$) rease.watch($signal$, watch_onDraw, rease)
 }

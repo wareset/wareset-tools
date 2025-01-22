@@ -6,6 +6,8 @@ import type { __Scene__ } from './Scene'
 
 import { parse_props_before_insert, parse_props_after_insert } from './utils'
 
+import { EMIT_NAME_RESIZE, EMIT_NAME_RENDER } from './const'
+
 class PixiRenderer extends Rease {
   readonly pixi: PIXI.IRenderer<HTMLCanvasElement>
   PixiScene?: __Scene__ | undefined
@@ -30,9 +32,9 @@ class PixiRenderer extends Rease {
         if (needResize) {
           needResize = false
           pixi.resize(canvas.clientWidth, canvas.clientHeight)
-          iam.emitDeep('pixi-resize')
+          iam.emitDeep(EMIT_NAME_RESIZE)
         }
-        iam.emitDeep('pixi-render', t)
+        iam.emitDeep(EMIT_NAME_RENDER, t)
         pixi.render(iam.PixiScene.pixi)
       }
     }
