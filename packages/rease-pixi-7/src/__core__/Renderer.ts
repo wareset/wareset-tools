@@ -45,6 +45,17 @@ class PixiRenderer extends Rease {
       updateAllow && ((updateAllow = false), requestAnimationFrame(render))
     }
 
+    // TODO EMIT RESIZE
+    // this.on(
+    //   EMIT_NAME_RESIZE,
+    //   () => {
+    //     pixi.resize(canvas.clientWidth, canvas.clientHeight)
+    //     iam.update()
+    //   },
+    //   iam,
+    //   true
+    // )
+
     iam.onDestroy(
       listen(canvas, 'resize', () => {
         needResize = true
