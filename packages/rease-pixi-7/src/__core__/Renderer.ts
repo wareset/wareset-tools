@@ -40,10 +40,23 @@ class PixiRenderer extends Rease {
     }
 
     const reaseCanvas = iam.insert(createElement(RElement, { this: canvas }))[0]
+    pixi.resize(canvas.clientWidth, canvas.clientHeight)
 
     this.update = () => {
       updateAllow && ((updateAllow = false), requestAnimationFrame(render))
     }
+
+    iam.onDestroy(
+      listen(
+        canvas,
+        'resize',
+        (() => {
+          needResize = true
+          iam.update()
+        })
+      )
+    )
+    needResize = false
 
     // TODO EMIT RESIZE
     // this.on(
@@ -55,13 +68,6 @@ class PixiRenderer extends Rease {
     //   iam,
     //   true
     // )
-
-    iam.onDestroy(
-      listen(canvas, 'resize', () => {
-        needResize = true
-        iam.update()
-      })
-    )
 
     parse_props_before_insert(iam, props)
     reaseCanvas.insert(props.children)

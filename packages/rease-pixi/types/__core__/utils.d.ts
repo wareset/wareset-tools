@@ -20,7 +20,7 @@ export type Props<R, P> = {
     onRenderCapture?: (this: R, t: number) => any;
     props?: IDeepPartial<P>;
     $props$?: IMaybeSubscribable<IDeepPartial<P>>;
-    $onDraw$?: IMaybeSubscribable<(rease: R, pixi: P) => any>;
+    $onDraw$?: IMaybeSubscribable<(this: R, pixi: P) => any>;
 };
 export type PropsScene<P extends Container> = Props<PixiScene<P>, P> & {
     pixi: new (...a: any) => P;
