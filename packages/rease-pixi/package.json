@@ -38,15 +38,15 @@
     "build": "dester -m",
     "dev": "dester -mw"
   },
-  "peerDependencies": {
-    "rease": "0.4.x"
-  },
   "devDependencies": {
-    "dester": "1.0.x",
-    "typescript": "5.7.2"
+    "dester": "1.0.x"
   },
   "dependencies": {
     "@pixi/sound": "6.0.1",
     "pixi.js": "8.5.0"
+  },
+  "peerDependencies": {
+    "rease": "0.4.x",
+    "typescript": "5.x"
   }
 }

@@ -30,10 +30,12 @@
     "dev": "dester -mw"
   },
   "devDependencies": {
-    "dester": "1.0.x",
-    "typescript": "5.7.2"
+    "dester": "1.0.x"
   },
   "dependencies": {
     "puppeteer": "^22.12.1"
+  },
+  "peerDependencies": {
+    "typescript": "5.x"
   }
 }

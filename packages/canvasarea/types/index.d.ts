@@ -34,15 +34,16 @@ declare class _CanvasareaRenderingContext2D_ {
     areaPivotYAdd(y?: number): void;
 }
 export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ & CanvasRenderingContext2D;
-export declare class Canvasarea {
-    readonly _draw: (ctx: CanvasareaRenderingContext2D) => void;
-    readonly _areas: Canvasarea[];
-    constructor(draw: Canvasarea['_draw']);
+export declare class Canvasarea<T = unknown> {
+    drawThis: T;
+    draw: (this: T, ctx: CanvasareaRenderingContext2D) => void;
+    readonly areas: Readonly<Canvasarea<any>[]>;
+    constructor(draw: Canvasarea<T>['draw'], drawThis?: T);
     render(ctx: CanvasRenderingContext2D): void;
-    createArea(draw: Canvasarea['_draw'], index?: number): Canvasarea;
-    attachArea(canvasarea: Canvasarea, index?: number): void;
-    detachArea(canvasarea_or_index: Canvasarea | number): boolean;
+    createArea<T2 = unknown>(draw: Canvasarea<T2>['draw'], drawThis?: T2, index?: number): Canvasarea<T2>;
+    attachArea(canvasarea: Canvasarea<any>, index?: number): void;
+    detachArea(canvasarea_or_index: Canvasarea<any> | number): boolean;
     detachAllAreas(): void;
 }
-export declare function canvasarea(draw: Canvasarea['_draw']): Canvasarea;
+export declare function canvasarea<T = unknown>(draw: Canvasarea<T>['draw'], drawThis?: T): Canvasarea<T>;
 export default canvasarea;

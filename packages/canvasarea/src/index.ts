@@ -35,62 +35,6 @@ class _CanvasareaRenderingContext2D_ {
 
     this._gsx = 1
     this._gsy = 1
-
-    if (!('GLOBAL_SCALE_X' in this)) {
-      const proto = _CanvasareaRenderingContext2D_.prototype
-      const proto2d = CanvasRenderingContext2D.prototype
-
-      const defineProperty = Object.defineProperty
-      const getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor
-
-      defineProperty(proto, 'GLOBAL_SCALE_X', {
-        get: function () {
-          return this._gsx
-        },
-      })
-      defineProperty(proto, 'GLOBAL_SCALE_Y', {
-        get: function () {
-          return this._gsy
-        },
-      })
-      defineProperty(proto, 'GLOBAL_SCALE_MEAN', {
-        get: function () {
-          return (this._gsx + this._gsy) / 2
-        },
-      })
-
-      Object.getOwnPropertyNames(proto2d).forEach(function (key) {
-        const { get, set, value } = getOwnPropertyDescriptor(proto2d, key)!
-        if (get || set || typeof value === 'function')
-          defineProperty(
-            proto,
-            key,
-            get || set
-              ? {
-                  // configurable,
-                  // enumerable,
-                  get: get
-                    ? function (this: _CanvasareaRenderingContext2D_) {
-                        return get.call(this._ctx)
-                      }
-                    : (void 0 as any),
-                  set: set
-                    ? function (this: _CanvasareaRenderingContext2D_, v: any) {
-                        set.call(this._ctx, v)
-                      }
-                    : (void 0 as any),
-                }
-              : {
-                  // configurable,
-                  // enumerable,
-                  // writable,
-                  value: function () {
-                    return value.apply(this._ctx, arguments)
-                  },
-                }
-          )
-      })
-    }
   }
 
   protected _render(canvasarea: Canvasarea) {
@@ -98,10 +42,10 @@ class _CanvasareaRenderingContext2D_ {
     this._tn = { tx: 0, ty: 0, sx: 1, sy: 1, ra: 0, px: 0, py: 0 }
 
     this._ctx.save()
-    canvasarea._draw(this as any)
+    canvasarea.draw.call(canvasarea.drawThis, this as any)
     const gsx = this._gsx
     const gsy = this._gsy
-    canvasarea._areas.forEach(areasForEach, { gsx, gsy, iam: this })
+    canvasarea.areas.forEach(areasForEach, { gsx, gsy, iam: this })
     this._gsx = this._gsy = 1
     this._ctx.restore()
   }
@@ -223,14 +167,63 @@ class _CanvasareaRenderingContext2D_ {
   }
 }
 
-function normalize_idx(i: number | undefined, l: number) {
-  return typeof i === 'number' && i <= l
-    ? (i |= 0) < 0
-      ? (i = l + i - 1) < 0
-        ? 0
-        : i
-      : i
-    : l
+let needPrepareCanvasarea = true
+function prepareCanvasarea() {
+  needPrepareCanvasarea = false
+
+  const proto = _CanvasareaRenderingContext2D_.prototype
+  const proto2d = CanvasRenderingContext2D.prototype
+
+  const defineProperty = Object.defineProperty
+  const getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor
+
+  defineProperty(proto, 'GLOBAL_SCALE_X', {
+    get: function () {
+      return this._gsx
+    },
+  })
+  defineProperty(proto, 'GLOBAL_SCALE_Y', {
+    get: function () {
+      return this._gsy
+    },
+  })
+  defineProperty(proto, 'GLOBAL_SCALE_MEAN', {
+    get: function () {
+      return (this._gsx + this._gsy) / 2
+    },
+  })
+
+  Object.getOwnPropertyNames(proto2d).forEach(function (key) {
+    const { get, set, value } = getOwnPropertyDescriptor(proto2d, key)!
+    if (get || set || typeof value === 'function')
+      defineProperty(
+        proto,
+        key,
+        get || set
+          ? {
+              // configurable,
+              // enumerable,
+              get: get
+                ? function (this: _CanvasareaRenderingContext2D_) {
+                    return get.call((this as any)._ctx)
+                  }
+                : (void 0 as any),
+              set: set
+                ? function (this: _CanvasareaRenderingContext2D_, v: any) {
+                    set.call((this as any)._ctx, v)
+                  }
+                : (void 0 as any),
+            }
+          : {
+              // configurable,
+              // enumerable,
+              // writable,
+              value: function () {
+                return value.apply(this._ctx, arguments)
+              },
+            }
+      )
+  })
 }
 
 export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ &
@@ -238,13 +231,17 @@ export type CanvasareaRenderingContext2D = _CanvasareaRenderingContext2D_ &
 
 const CONTEXTS: _CanvasareaRenderingContext2D_[] = []
 
-export class Canvasarea {
-  readonly _draw: (ctx: CanvasareaRenderingContext2D) => void
-  readonly _areas: Canvasarea[]
+export class Canvasarea<T = unknown> {
+  drawThis: T
+  draw: (this: T, ctx: CanvasareaRenderingContext2D) => void
+  readonly areas: Readonly<Canvasarea<any>[]>
 
-  constructor(draw: Canvasarea['_draw']) {
-    this._draw = draw
-    this._areas = []
+  constructor(draw: Canvasarea<T>['draw'], drawThis?: T) {
+    this.draw = draw
+    this.drawThis = drawThis!
+    this.areas = []
+
+    needPrepareCanvasarea && prepareCanvasarea()
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -256,33 +253,33 @@ export class Canvasarea {
     CONTEXTS.push(context)
   }
 
-  createArea(draw: Canvasarea['_draw'], index?: number) {
-    const area = new Canvasarea(draw)
-    this.attachArea(area, index)
-    return area
+  createArea<T2 = unknown>(draw: Canvasarea<T2>['draw'], drawThis?: T2, index?: number) {
+    const area = new Canvasarea<T2>(draw, drawThis)
+    return this.attachArea(area, index), area
   }
 
-  attachArea(canvasarea: Canvasarea, index?: number) {
-    const areas = this._areas
-    areas.splice(normalize_idx(index, areas.length), 0, canvasarea)
+  attachArea(canvasarea: Canvasarea<any>, index?: number) {
+    // @ts-ignore
+    this.areas.splice(typeof index === 'number' ? index : this.areas.length, 0, canvasarea)
   }
 
-  detachArea(canvasarea_or_index: Canvasarea | number) {
-    const areas = this._areas
-    const idx =
-      typeof canvasarea_or_index === 'number'
-        ? canvasarea_or_index | 0
-        : areas.lastIndexOf(canvasarea_or_index)
-    return idx < 0 ? false : areas.splice(idx, 1).length > 0
+  detachArea(canvasarea_or_index: Canvasarea<any> | number) {
+    const areas = this.areas
+    return typeof canvasarea_or_index !== 'number' &&
+      (canvasarea_or_index = areas.lastIndexOf(canvasarea_or_index)) < 0
+      ? false
+      : // @ts-ignore
+        areas.splice(canvasarea_or_index, 1).length > 0
   }
 
   detachAllAreas() {
-    this._areas.length = 0
+    // @ts-ignore
+    this.areas.length = 0
   }
 }
 
-export function canvasarea(draw: Canvasarea['_draw']) {
-  return new Canvasarea(draw)
+export function canvasarea<T = unknown>(draw: Canvasarea<T>['draw'], drawThis?: T) {
+  return new Canvasarea<T>(draw, drawThis)
 }
 
 export default canvasarea

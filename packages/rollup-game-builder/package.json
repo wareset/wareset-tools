@@ -34,8 +34,7 @@
   },
   "devDependencies": {
     "@types/adm-zip": "0.5.5",
-    "dester": "1.0.x",
-    "typescript": "5.7.2"
+    "dester": "1.0.x"
   },
   "dependencies": {
     "@babel/core": "^7.23.6",
@@ -51,11 +50,14 @@
     "@wareset-tools/rollup-plugin-cssinjs-minify": "1.0.x",
     "adm-zip": "0.5.16",
     "jimp": "0.22.12",
-    "rollup": "3.29.4",
+    "rollup": "3.29.5",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-polyfill-node": "^0.13.0",
     "sucrase": "^3.35.0",
     "svgo": "^3.3.2",
     "terser": "^5.37.0"
+  },
+  "peerDependencies": {
+    "typescript": "5.x"
   }
 }

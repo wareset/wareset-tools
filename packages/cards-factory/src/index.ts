@@ -431,3 +431,32 @@ export default function cardsFactory({
     }>
   }
 }
+
+// function drawRoundedRect(ctx: any, x: number, y: number, w: number, h: number, cr: number) {
+  // ctx.beginPath();
+  // ctx.moveTo(x + w / 2, y);
+  // // Начинаем в середине верхней
+  // // стороны.
+  // ctx.arcTo(x + w, y, x + w, y + h, cr); // Верхняя сторона и верхний
+  // // правый угол.
+  // ctx.arcTo(x + w, y + h, x, y + h, cr); // Правая сторона и нижний
+  // // правый угол.
+  // ctx.arcTo(x, y + h, x, y, cr);
+  // // Нижняя сторона и нижний
+  // // левый угол.
+  // ctx.arcTo(x, y, x + w, y, cr);
+  // // Левая сторона и верхний
+  // // левый угол.
+  // ctx.closePath();
+  // ctx.strokeStyle = '#f00';
+  // // Задаем для обводки
+  // // ярко-красный цвет.
+  // ctx.lineWidth = 4;
+  // // Задаем ширину линии равной
+  // // 4 пикселам.
+  // ctx.stroke();
+  // ctx.fillStyle = '#0f0';
+  // // Здесь указываем зеленый цвет
+  // // заливки.
+  // ctx.fill();
+// }

@@ -37,10 +37,12 @@
   "devDependencies": {
     "dester": "1.0.x",
     "nodemon": "^3.1.1",
-    "svgo": "^3.3.2",
-    "typescript": "5.7.2"
+    "svgo": "^3.3.2"
   },
   "dependencies": {
     "@wareset-tools/canvasarea": "1.0.x"
+  },
+  "peerDependencies": {
+    "typescript": "5.x"
   }
 }
